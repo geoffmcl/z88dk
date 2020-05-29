@@ -1,0 +1,18 @@
+TEST_CALL(test_continuation_line);
+TEST_CALL(test_empty);
+TEST_CALL(test_end_newline);
+TEST_CALL(test_comments);
+TEST_CALL(test_label);
+TEST_CALL(test_ucase);
+TEST_CALL(test_just_opcode);
+TEST_CALL(test_label_and_opcode);
+TEST_CALL(test_opcode_and_operand);
+TEST_CALL(test_all_fields);
+TEST_CALL(test_ident);
+TEST_CALL(test_numbers);
+TEST_CALL(test_number_errors);
+TEST_CALL(test_scan_error);
+TEST_CALL(test_strings);
+TEST_EXEC(exec_scan_error);
+#undef TEST_CALL
+#undef TEST_EXEC

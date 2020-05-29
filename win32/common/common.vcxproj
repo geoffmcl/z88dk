@@ -129,9 +129,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <Text Include="ReadMe.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="..\..\src\common\die.h" />
     <ClInclude Include="..\..\src\common\dirname.h" />
     <ClInclude Include="..\..\src\common\fileutil.h" />

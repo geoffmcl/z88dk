@@ -15,43 +15,48 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\src\z80asm\dev\z80asm2\backend.h">
+    <ClInclude Include="..\..\src\z80asm2\asm.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\z80asm\dev\z80asm2\frontend.h">
+    <ClInclude Include="..\..\src\z80asm2\gram.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\z80asm\dev\z80asm2\utils.h">
+    <ClInclude Include="..\..\src\z80asm2\utils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\common\zutils.h">
+    <ClInclude Include="..\..\src\z80asm2\parse.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\z80asm2\lex.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\src\z80asm\dev\z80asm2\backend.c">
+    <ClCompile Include="..\..\src\z80asm2\z80asm2.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\z80asm\dev\z80asm2\frontend.c">
+    <ClCompile Include="..\..\src\z80asm2\asm.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\z80asm\dev\z80asm2\utils.c">
+    <ClCompile Include="..\..\src\z80asm2\gram.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\z80asm\dev\z80asm2\z80asm2.c">
+    <ClCompile Include="..\..\src\z80asm2\lex.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\common\die.c">
+    <ClCompile Include="..\..\src\z80asm2\utils.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\ext\UNIXem\src\dirent.c">
+    <ClCompile Include="..\..\src\z80asm2\parse.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\ext\UNIXem\src\glob.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\common\zutils.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\src\z80asm2\lex.l">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="..\..\src\z80asm2\gram.y">
+      <Filter>Header Files</Filter>
+    </None>
   </ItemGroup>
 </Project>
