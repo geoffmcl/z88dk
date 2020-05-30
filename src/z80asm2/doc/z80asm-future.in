@@ -40,15 +40,76 @@ z80asm -xlibrary.lib [options] file...
 
 When called with the ```-x``` option, **z80asm** builds a library containing all the object files passed as argument. That library can then be used during linking by specifying it with the ```-i``` option.
 
----
-
-<a id=options></a> [(top)](#top)
-
 ## Options 
 
----
+### General Options
 
-<a id=inputfiles></a> [(top)](#top)
+#### -v (verbose)
+
+The ```-v``` options causes **z80asm** to tell what is happening by messages sent to ```stdout```.
+
+
+### Preprocessor options
+
+#### -atoctal (at is octal prefix)
+
+By default the at-character (```@```) is used as a binary number prefix. 
+
+With the option ```-atoctal``` it is used as the octal number prefix instead.
+
+#### -dotdirective (period is directive prefix)
+
+By default the period (```.```) is used to signal that the next identifier is a label. 
+
+With the option ```-dotdirective``` it is used instead to signal that the next identifier is an assembler directive.
+
+#### -hashhex (hash is hex prefix)
+
+By default the hash-character (```#```) is used to signal that the next expression should be compiled as an immediate value. This meaning, although common in assemblers, is a no-operation in **z80asm**. 
+
+With the option ```-hashhex``` the hash-character is used as the hexadecimal number prefix instead.
+
+#### -labelcol1 (labels at column 1)
+
+By default **z80asm** needs either a period (```.```) prefix (but see ```-dotdirective```) or a colon (```:```) suffix to signal that an identifier is a label, and white space at the beginning of a line is not significant.
+
+With the option ```-labelcol1``` an identifier is a label if started at column 1, or a directive or opcode if started after white space.
+
+#### -ucase (upper case)
+
+By default **z80asm** is case-sensitive for identifiers, but case-insensitive for assembly keywords (opcodes, directives, registers and flags).
+
+The option ```-ucase``` causes **z80asm** to convert all the symbols to upper-case, so that code that assumes case-insentivity can be assembled.
+
+#### -IXIY (swap IX and IY)
+
+This option causes the ```IX``` and ```IY``` register roles to be swapped, i.e. references to ```IX``` are assembled as ```IY``` and vice-versa. Useful when the assembler is used as a back-end of a compiler that uses one of the index registers that is used in the target platform.
+
+### Assembly options
+
+#### -noprec (no precedence in expression evaluation)
+
+By default **z80asm** follows the C-precedence rules while evaluating expressions:
+
+| Pecedence | Operators  | Description                              | Associativity |
+| ---       | ---        | ---                                      | ---           |
+| 1         | **         | Power                                    | right-to-left |
+| 2         | + - #      | Unary plus, unary minus, immediate       | right-to-left |
+| 3         | ! ~        | Logical NOT and bitwise NOT              | right-to-left |
+| 4         | * / %      | Multiply, divide and remainder           | left-to-right |
+| 5         | + -        | Add and subtract                         | left-to-right |
+| 6         | << >>      | Bitwise left-shift and right-shift       | left-to-right |
+| 7         | < <= > >=  | Less, Less-equal, greater, greater-equal | left-to-right |
+| 8         | = == != <> | Equal (two forms), Not equal (two forms) | left-to-right |
+| 9         | &          | Bitwise AND                              | left-to-right |
+| 10         | ^          | Bitwise XOR                              | left-to-right |
+| 11        | \|         | Bitwise OR                               | left-to-right |
+| 12        | &&         | Logical AND                              | left-to-right |
+| 13        | ^^         | Logical XOR                              | left-to-right |
+| 14        | \|\|       | Logical OR                               | left-to-right |
+| 15        | ?:         | Ternary conditional                      | right-to-left |
+
+With the ```-noprec``` expressions are evaluated strictly left-to-right.
 
 ## Input Files
 
@@ -58,16 +119,13 @@ An input file with a ```.o``` extension is assumed to be already in object file 
 
 A project list file may be supplied in the command line prefixed by the at-sign (e.g. ```@project.lst```). The list file contains one input file name per line, or another project list prefixed with an at-sign, which is opened recursively. Hash signs (```#```) and semi-colons (```;```) may be used at the start of lines in the list files to include comments.
 
-Both the command line and the list files support wild-cards to expand all the files that match the given pattern.  
-*Note* that the Operating System may do its own wildcard expansion and the pattern may need to be quoted in the command line.
+Both the command line and the list files support wild-cards to expand all the files that match the given pattern.
+
+**Note** that the Operating System may do its own wildcard expansion and the pattern may need to be quoted in the command line.
 
 A single star in a file name (```*```) expands to the list of all files/directories that match the complete pattern, where the star represents any sequence of characters. A double-star in a directory name (```**```) expands to the complete directory sub-tree, when searched recursively.
 
----
-
-<a id=sourcefileformat></a>
-
-## Source File Format
+### Source File Format
 
 The assembler parses source files with any of the common end-of-line termination sequences (```"\r"```, ```"\n"``` or ```"\r\n"```). Each line starts with an optional label and can contain assembly directives (i.e. instructions to the assembler), assembly instructions (i.e. code to be translated into object code for the specific processor) or blanks and comments.
 
@@ -77,9 +135,7 @@ A single backslash character (```\```) may be used to separate multiple statemen
     start: push bc\pop hl     ; define a label and add two assembly opcodes              
     ret                       ; assembly opcode can be at the first column    
 
-Differently to most other assemblers, white space is not significant, i.e. a label can be defined after white space, and an opcode can be written at column 1. 
-
-The option ```-labelcol1``` can be used to force any word starting on column 1 to be a label.
+Differently to most other assemblers, white space is not significant, i.e. a label can be defined after white space, and an opcode can be written at column 1 (but see option ```-labelcol1```).
 
 ### Comments
 
@@ -93,72 +149,73 @@ Comments may start with a semi-colon (```;```) or two slashes (```//```) and end
 
 ### Symbols
 
-All symbols in the code (labels, variables, ...) are named with unique identifiers. Identifiers start with a letter or underscore (```_```), and can contain letters, digits, underscores or periods (```.```). 
-
-Identifiers are case-sensitive. 
-
-The option ```-ucase``` can be used to convert all symbols to upper-case.
+All symbols in the code (labels, variables, ...) are named with unique identifiers. Identifiers start with a letter or underscore (```_```), and can contain letters, digits, underscores or periods (```.```). Identifiers are case-sensitive (but see option ```-ucase```).
 
 ### Labels
 
-A label is defined at the start of a line by prefixing a symbol with a period (```.```) or suffixing it with a colon (```:```), i.e. either ```.label``` or ```label:```. The symbol may be used to refer to address in the object code.
-
-If the option ```-labelcol1``` is used, then any identifier starting at column 1 is a label.
-
-If the option ```-dotdirective``` is used, then a period is used to start a directive (e.g. ```.ORG```), and a label must be defined with a colon suffix, or the ```-labelcol1``` option and at column 1.
+A label is a symbol that represents the current assembly address (```ASMPC```) and is defined at the start of a line by prefixing a symbol with a period (```.```) (but see ```-dotdirective```) or suffixing it with a colon (```:```), i.e. either ```.label``` or ```label:``` (but see ```-labelcol1```).
 
 ### Numbers
 
-The assembler accepts numbers in decimal, hexadecimal, octal and binary. Different syntaxes are allowed to simplify porting code written for other assemblers. Some of the prefix characters are also used as operators; in this case a space may be needed to signal the difference.
+The assembler accepts numbers in decimal, hexadecimal, octal and binary. Different syntaxes are allowed to simplify porting code written for other assemblers. Some of the prefix characters are also used as operators; in this case a space may be needed to signal the difference, e.g.
 
     ld a, %10     ; A = 2 (10 binary)
     ld a, 12 % 10 ; A = 2 (remainder of 12 divided by 10)
 
-All expressions are computed as signed integers with the host platform's integer size (32-bit or 64-bit in the most common platforms). Expression evaluation follows the operator precedence of C, except if the option ```-noprec``` is given, in which case the expressions are computed right to left.
+All expressions are computed as signed integers with the host platform's integer size (32-bit or 64-bit in the most common platforms). Expression evaluation follows the operator precedence of C (but see ```-noprec```).
 
 The underscore can be used to separate groups of digits to help readability, e.g. ```0xFFFF_FFFF``` is the same as ```0xFFFFFFFF```.
 
 Floating point numbers can be supplied with the ```FLOAT``` directive, that encodes them in the current floating point format in the object code. Floating point numbers must be supplied in decimal base and have an integer part and a fractional part separated by a period, followed by an optional ```e``` (exponent), a plus or minus sign, and the power of 10 to multiply to the base.
 
-**Decimal** numbers are a sequence of decimal digits (```0..9```), optionally followed by a ```d``` or ```D``` - all prefixes and suffixes are case-insensitive. Leading zeros are insignificant - note the difference from C, where a leading zero means octal.
+#### Decimal
+
+Decimal numbers are a sequence of decimal digits (```0..9```), optionally followed by a ```d``` or ```D``` - all prefixes and suffixes are case-insensitive. Leading zeros are insignificant - note the difference from C, where a leading zero means octal.
 
     ld a, 99
     ld a, 99d
 
+#### Hexadecimal
 
-**Hexadecimal** numbers are a sequence of hexadecimal digits (```0..9``` and ```A..F```, case-insensitive), either prefixed or suffixed with an hexadecimal marker. If the marker is a suffix, and the number starts with a letter, then a leading zero has to be added.
+Hexadecimal numbers are a sequence of hexadecimal digits (```0..9``` and ```A..F```, case-insensitive), either prefixed or suffixed with an hexadecimal marker. If the marker is a suffix, and the number starts with a letter, then a leading zero has to be added.
 
 The hexadecimal prefix ```$``` is also the ```ASMPC``` identifier if not followed by a hexadecimal number, i.e. the address of the instruction being assembled.
 
-The hexadecimal prefix ```#``` is only recognized if the option ```-hashhex``` is given. By default a ```#``` is used to signal that the following value is immediate.
+The hexadecimal prefix ```#``` is only recognized with the option ```-hashhex```.
 
     ld a, $FF
-    ld a, #FF          ; only with option -hashhex
+    ld a, #FF           ; only with option -hashhex
     ld a, 0xFF
     ld a, 0FFh
 
-**Octal** numbers are a sequence of octal digits (```0..7```), either prefixed or suffixed with an octal marker. 
+#### Octal
 
-The at-sign (```@```) is an octal prefix only if the option ```-atoctal``` is given. By default a ```@``` is a binary prefix.
+Octal numbers are a sequence of octal digits (```0..7```), either prefixed or suffixed with an octal marker. 
 
-    ld a, @77          ; only with option -atoctal
+The octal-prefix ```@``` is only recognized with the option ```-atoctal```.
+
+    ld a, @77           ; only with option -atoctal
     ld a, 0o77
     ld a, 0q77
     ld a, 77o
     ld a, 77q
 
-**Binary** numbers are a sequence of binary digits (```0..1```), either prefixed or suffixed with a binary marker.  
+#### Binary
 
-The percent sign (```%```) is also the modulus operator.
+Binary numbers are a sequence of binary digits (```0..1```), either prefixed or suffixed with a binary marker.  
 
-The at-sign (```@```) is a binary prefix by default, or an octal prefix if the option ```-atoctal``` is given.
+The binary prefix ```%``` is also the modulus operator, if not followed by a binary digit. 
+
+The binary prefix ```@``` is recognized unless the option ```-atoctal``` is given.
 
     ld a, %11
-    ld a, @11
+    ld a, @11           ; except with option -atoctal
     ld a, 0b11
     ld a, 11b
 
-Binary numbers can be specified as **bitmaps**, with ```#``` as ```1``` and ```-``` as ```0```, using the binary prefix (```@``` or ```%```) immediately followed by a double-quoted string of hashes and dashes.
+#### Bitmaps
+
+Binary numbers can be specified as bitmaps, with ```#``` as ```1``` and ```-``` as ```0```, using the binary prefix (```@``` or ```%```) immediately followed by a double-quoted string of hashes and dashes.
 
     defb @"---##---"
     defb @"-##--##-"
@@ -178,11 +235,6 @@ Assembler directives (```ORG```, ```INCLUDE```, ...) and processor opcodes (```N
 
     jr: jr jr  ; silly example, jr is both a label and an opcode
                ; while correct code, it's confusing, don't do it
-
-
----
-
-<a id=objectfileformat></a>
 
 ## Object File Format
 
@@ -379,9 +431,6 @@ When the assembler is executed options are all preset with default values and ar
 
 Shows a help screen with the available options.
 
-#### -v : Information during assembly
-
-The assembler writes a certain amount of information to its program window (or on the command line screen) to let the user know what is happening. For each source file both the current assembler pass and include file names are displayed. During linking all object file names and specified names of library modules are displayed. When all files have been processed and the necessary output generated, a status message is displayed which informs you of how many errors occurred (or none). You will also be reported with a message of how many source lines that have been parsed during a compilation. This information can be very convenient during a large compilation project, especially on relatively smaller computers (with less powerful processors) and no hard disk. If you own a powerful 32-bit computer equipped with a fast hard disk, assembly information is displayed at high speed (and almost impossible to read); it may then be useful to turn this information off specifying a -nv option at the command line.
 
 #### -e\<ext\> : Use alternative source file extension
 
@@ -565,10 +614,6 @@ This option disables assembly opcodes not available in the RCM2000/RCM3000 serie
 #### -plus : Support for the Ti83Plus
 
 Defines how the INVOKE command is coded: either as a RST 28H instruction (option on) or as a regular CALL instruction (option off).
-
-#### -IXIY : Swap IX and IY registers
-
-Swaps the IX and IY registers; references to IX are coded as IY and vice versa. Useful when the assembler is used as a back-end of a compiler that uses one of the index registers that is used in the target platform.
 
 #### -C : Enable LINE directive
 
@@ -1401,6 +1446,7 @@ The library file format is a sequence of object files with additional structures
 ||next object file|32-bit|File pointer to the next object file, 0xFFFFFFFF if the current Object File Block is the last in the library file.|
 ||object file length|32-bit|Length of the Object File. If this integer is 0 then it is indicated that the current \<Object File Block\> has been marked "deleted" and will not be used.|
 ||object file|length bytes|'Z80RMF01' Object File|
+
 ## Copyright
 
 The original z80asm module assembler was written by Gunther Strube. 
@@ -1410,7 +1456,7 @@ and then to C68 on QDOS.
 It has been maintained since 2011 by Paulo Custodio.
 
 Copyright (C) Gunther Strube, InterLogic 1993-99  
-Copyright (C) Paulo Custodio, 2011-2019
+Copyright (C) Paulo Custodio, 2011-2020
 
 ## License
 

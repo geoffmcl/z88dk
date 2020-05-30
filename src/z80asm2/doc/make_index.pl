@@ -114,8 +114,12 @@ sub add_chap_header {
 }
 
 sub expand_keywords {
+	my $in_code;
 	for (@_) {
 		next if /^\#/;
-		s/(\b[A-Z_0-9]{2,}|-\w+)/ exists($keywords{$1}) ? $keywords{$1} : $1 /ge;
+		$in_code = !$in_code if /^```\s*$/;
+		if (!$in_code) {
+			s/(?:```+)?(\b[A-Z_0-9]{2,}|-\w+)(?:```+)?/ exists($keywords{$1}) ? $keywords{$1} : $1 /ge;
+		}
 	}
 }
