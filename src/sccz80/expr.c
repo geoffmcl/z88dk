@@ -227,13 +227,13 @@ int heir1a(LVALUE* lval)
             if (heir1(&lval2))
                 rvalue(&lval2);
             jump(endlab = getlabel());
-            postlabel(falselab);
+            gen_auto_label(falselab);
         } else {
             jumpnc(falselab = getlabel());
             if (heir1(&lval2))
                 rvalue(&lval2);
             jump(endlab = getlabel());
-            postlabel(falselab);
+            gen_auto_label(falselab);
         }
         needchar(':');
         /* evaluate 'false' expression */
@@ -242,26 +242,26 @@ int heir1a(LVALUE* lval)
         /* check types of expressions and widen if necessary */
         if (lval2.val_type == KIND_DOUBLE && lval->val_type != KIND_DOUBLE) {
             zconvert_to_double(lval->val_type, lval->ltype->isunsigned);
-            postlabel(endlab);
+            gen_auto_label(endlab);
         } else if (lval2.val_type != KIND_DOUBLE && lval->val_type == KIND_DOUBLE) {
             jump(skiplab = getlabel());
-            postlabel(endlab);
+            gen_auto_label(endlab);
             zconvert_to_double(lval2.val_type, lval2.ltype->isunsigned);
-            postlabel(skiplab);
+            gen_auto_label(skiplab);
         } else if (lval2.val_type == KIND_LONG && lval->val_type != KIND_LONG) {
             widenlong(&lval2, lval);
             lval->val_type = KIND_LONG;
             lval->ltype = lval->ltype->isunsigned ? type_ulong : type_long;
-            postlabel(endlab);
+            gen_auto_label(endlab);
         } else if (lval2.val_type != KIND_LONG && lval->val_type == KIND_LONG) {
             jump(skiplab = getlabel());
-            postlabel(endlab);
+            gen_auto_label(endlab);
             widenlong(lval, &lval2);
             lval->val_type = KIND_LONG;
             lval->ltype = lval->ltype->isunsigned ? type_ulong : type_long;            
-            postlabel(skiplab);
+            gen_auto_label(skiplab);
         } else
-            postlabel(endlab);
+            gen_auto_label(endlab);
         /* result cannot be a constant, even if second expression is */
         lval->is_const = 0;
         return 0;
@@ -571,7 +571,7 @@ int heira(LVALUE *lval)
         if (lval->indirect_kind)
             return 0;
         /* global & non-array */
-        address(lval->symbol);
+        gen_load_address(lval->symbol);
         lval->indirect_kind = lval->symbol->ctype->kind;
         return 0;
     }
@@ -619,9 +619,7 @@ int heirb(LVALUE* lval)
                     return 0;
                 }
                 setstage(&before, &start);
-                if (lval->ltype->kind == KIND_CPTR)
-                    zpushde();
-                zpush();
+                gen_push_pointer(lval->ltype->kind);
                 valtype = expression(&con, &dval, &type);
                 // TODO: Check valtype
                 val = dval;
@@ -641,7 +639,7 @@ int heirb(LVALUE* lval)
                         /* constant offset to array on stack */
                         /* do all offsets at compile time */
                         clearstage(before1, 0);
-                        lval->base_offset = getloc(ptr, val);
+                        lval->base_offset = gen_load_auto_address(ptr, val);
                         lval->offset = val;
                     } else {
                         /* add constant offset to address in primary */
@@ -833,7 +831,7 @@ int heirb(LVALUE* lval)
                 return k;
         }
     if (ptr && ptr->ctype->kind == KIND_FUNC) {
-        address(ptr);
+        gen_load_address(ptr);
         lval->symbol = NULL;  // TODO: Can we actually set it correctly here? - Needed for verification of func ptr arguments
         lval->ltype = ptr->ctype;
         lval->flags = ptr->flags;

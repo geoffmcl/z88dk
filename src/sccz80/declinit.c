@@ -26,11 +26,8 @@ int initials(const char *dropname, Type *type)
     } else {
         output_section(get_section_name(type->namespace,c_data_section));
     }
-    prefix();
-    outname(dropname, YES);
-    col();
-    nl();
-
+    gen_label(dropname, NULL);
+    
     if (cmatch('{')) {
         if ( type->kind == KIND_STRUCT || ( type->kind == KIND_PTR && type->ptr->kind == KIND_STRUCT)) {
             if ( type->kind == KIND_PTR ) {
@@ -398,13 +395,13 @@ static void output_double_string_load(double value)
     int   dumplocation = getlabel();
     LVALUE lval;
 
-    postlabel(dumplocation);
+    gen_auto_label(dumplocation);
     defstorage(); outdec(6); nl();
     
     output_section(c_init_section);
     lval.const_val = value;
     load_double_into_fa(&lval);
-    immedlit(dumplocation,0); nl();
+    gen_load_literal_address(dumplocation,0);
     callrts("dstore");
     output_section(c_data_section);
 }

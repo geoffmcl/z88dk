@@ -336,8 +336,7 @@ void callfunction(SYMBOL *ptr, Type *fnptr_type)
         } else if ( functype->flags & BANKED ) {
             zbankedcall(ptr);
         } else {
-            zcallop();
-            outname(funcname, dopref(ptr)); nl();
+            zcall(funcname,ptr);
         }
     } else {
         nargs += callstk(functype, nargs, fnptr_type->kind == KIND_CPTR, last_argument_size);

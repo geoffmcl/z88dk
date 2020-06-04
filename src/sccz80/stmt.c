@@ -259,7 +259,7 @@ void doiferror()
     statement();
     if (amatch("else") == 0) {
         /* no else, print false label and exit  */
-        postlabel(flab1);
+        gen_auto_label(flab1);
         return;
     }
     /* an "if...else" statement. */
@@ -268,9 +268,9 @@ void doiferror()
         /* if last statement of 'if' was 'return' we needn't skip 'else' code */
         jump(flab2);
     }
-    postlabel(flab1); /* print false label */
+    gen_auto_label(flab1); /* print false label */
     statement(); /* and do 'else' clause */
-    postlabel(flab2);
+    gen_auto_label(flab2);
 }   
 
 /*
@@ -297,7 +297,7 @@ void doif()
     if (amatch("else") == 0) {
         /* no else, print false label and exit  */
         if ( testtype < 0 ) {
-            postlabel(flab1);
+            gen_auto_label(flab1);
             clearbuffer(buf);
         } else if  (testtype ==  1 ) { /* Evaluate to true */
             clearbuffer(buf);
@@ -320,11 +320,11 @@ void doif()
         jump(flab2);
     }
     if ( testtype != 0 ) {
-        postlabel(flab1); /* print false label */
+        gen_auto_label(flab1); /* print false label */
     }
     statement(); /* and do 'else' clause */
     if ( testtype != 0 ) {
-        postlabel(flab2); /* print true label */
+        gen_auto_label(flab2); /* print true label */
     }
 }
 
@@ -361,7 +361,7 @@ void dowhile()
     addwhile(&wq); /* add entry to queue */
     /* (for "break" statement) */
     buf = startbuffer(100);
-    postlabel(wq.loop); /* loop label */
+    gen_auto_label(wq.loop); /* loop label */
     exprconstant = test(wq.exit, YES); /* see if true */
     if ( exprconstant == 0 ) {
         t_buffer *buf2 = startbuffer(100);
@@ -371,7 +371,7 @@ void dowhile()
     } else {
         statement(); /* if so, do a statement */
         jump(wq.loop); /* loop to label */
-        postlabel(wq.exit); /* exit label */
+        gen_auto_label(wq.exit); /* exit label */
         clearbuffer(buf);
     }
     delwhile(); /* delete queue entry */
@@ -387,16 +387,16 @@ void dodo()
     int testresult;
 
     addwhile(&wq);
-    postlabel(top = getlabel());
+    gen_auto_label(top = getlabel());
     statement();
     needtoken("while");
-    postlabel(wq.loop);
+    gen_auto_label(wq.loop);
     testresult = test(wq.exit, YES);
     if ( testresult == 0 ) { // False
         // We don't need to do anything
     } else {
         jump(top);
-        postlabel(wq.exit);
+        gen_auto_label(wq.exit);
     }
     delwhile();
     ns();
@@ -446,13 +446,13 @@ void dofor()
 
     if ( testresult != 0 ) {  /* So it's either true or non-constant */
         jump(l_condition); /*         goto condition             */
-        postlabel(wq.loop); /* .loop                              */
+        gen_auto_label(wq.loop); /* .loop                              */
         clearbuffer(buf3); /*         modification               */
-        postlabel(l_condition); /* .condition                         */
+        gen_auto_label(l_condition); /* .condition                         */
         clearbuffer(buf2); /*         if (!condition) goto exit  */
         statement(); /*         statement                  */
         jump(wq.loop); /*         goto loop                  */
-        postlabel(wq.exit); /* .exit                              */
+        gen_auto_label(wq.exit); /* .exit                              */
     } else {
         clearbuffer(buf2); // Condition 
         buf4 = startbuffer(100);
@@ -496,32 +496,13 @@ void doswitch()
     /* jump(wq.exit) ; */
     suspendbuffer();
 
-    postlabel(endlab);
-    if (switch_type->kind == KIND_CHAR) {
-        LoadAccum();
-        while (swptr < swnext) {
-            CpCharVal(swptr->value);
-            opjump("z,", swptr->label);
-            ++swptr;
-        }
-    } else {
-        sw(switch_type->kind); /* insert code to match cases */
-        while (swptr < swnext) {
-            defword();
-            printlabel(swptr->label); /* case label */
-            if (switch_type->kind == KIND_LONG) {
-                outbyte('\n');
-                deflong();
-            } else
-                outbyte(',');
-            outdec(swptr->value); /* case value */
-            nl();
-            ++swptr;
-        }
-        defword();
-        outdec(0);
-        nl();
+    gen_auto_label(endlab);
+    gen_switch_preamble(switch_type->kind);
+    while (swptr < swnext ) {
+        gen_switch_case(switch_type->kind, swptr->value, swptr->label);
+        ++swptr;
     }
+    gen_switch_postamble(switch_type->kind);
     if (swdefault)
         jump(swdefault);
     else
@@ -529,7 +510,7 @@ void doswitch()
 
     clearbuffer(buf);
 
-    postlabel(wq.exit);
+    gen_auto_label(wq.exit);
     delwhile();
     swnext = swnex;
     swdefault = swdef;
@@ -549,7 +530,7 @@ void docase()
         errorfmt("Too many cases", 0 );
         return;
     }
-    postlabel(swnext->label = getlabel());
+    gen_auto_label(swnext->label = getlabel());
     constexpr(&value,&valtype, 1);
     if ( valtype == KIND_DOUBLE ) 
         warningfmt("invalid-value","Unexpected floating point encountered, taking int value");
@@ -566,7 +547,7 @@ void dodefault()
     } else
         errorfmt("Not in switch", 0 );
     needchar(':');
-    postlabel(swdefault = getlabel());
+    gen_auto_label(swdefault = getlabel());
 }
 
 /*
@@ -578,9 +559,9 @@ void doreturn(char type)
     if (endst() == 0) {
         Type *expr = doexpr();
         force(currfn->ctype->return_type->kind, expr->kind, currfn->ctype->return_type->isunsigned, expr->isunsigned, 0);
-        leave(currfn->ctype->return_type->kind, type, incritical);
+        gen_leave_function(currfn->ctype->return_type->kind, type, incritical);
     } else {
-        leave(KIND_INT, type, incritical);
+        gen_leave_function(KIND_INT, type, incritical);
     }
 }
 

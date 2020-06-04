@@ -65,22 +65,6 @@ int getlabel()
     return (++nxtlab);
 }
 
-/* Print a queue label/reference */
-
-void queuelabel(int label)
-{
-    outstr("i_");
-    outdec(label);
-}
-
-/* print label with colon and newline */
-void postlabel(int label)
-{
-    prefix();
-    printlabel(label);
-    col();
-    nl();
-}
 
 /* Test if given character is alpha */
 int alpha(char c)

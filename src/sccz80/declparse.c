@@ -1724,17 +1724,12 @@ static void declfunc(Type *functype, enum storage_type storage)
         }
     }
 
-    prefix();
-    outname(currfn->name, dopref(currfn));
-    col(); /* print function name */
-    if (dopref(currfn) == NO) {
-        nl();
-        GlobalPrefix(); outname(currfn->name, YES); nl();
-        prefix();
-        outname(currfn->name, YES);
-        col();
+    gen_label(currfn->name, currfn);
+    // Library functions should export the SDCC equivalent name as well
+    if ( currfn->ctype->flags & LIBRARY) {
+        gen_global_scope(currfn->name, NULL);
+        gen_label(currfn->name, NULL);
     }
-    nl();
     reset_namespace();
         
     
@@ -1748,11 +1743,11 @@ static void declfunc(Type *functype, enum storage_type storage)
         int   adjust = 1;
 
         if ( fastarg->size == 2 || fastarg->size == 1) 
-            zpush();
+            gen_push_primary(KIND_INT);
         else if ( fastarg->kind == KIND_DOUBLE )
-            dpush();     
+            gen_push_primary(KIND_DOUBLE);     
         else if ( fastarg->size == 4 || fastarg->size == 3)
-            lpush();
+            gen_push_primary(KIND_LONG);
         else
             adjust = 0;
 
@@ -1787,7 +1782,7 @@ static void declfunc(Type *functype, enum storage_type storage)
         }
         /* do a statement, but if it's a return, skip */
         /* cleaning up the stack */
-        leave(NO, NO, 0);
+        gen_leave_function(NO, NO, 0);
     }
     goto_cleanup();
     function_appendix(currfn);

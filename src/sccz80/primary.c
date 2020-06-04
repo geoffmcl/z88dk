@@ -49,11 +49,10 @@ int primary(LVALUE* lval)
             lval->ptr_type = KIND_CHAR; /* djm 9/3/99 */
             lval->val_type = KIND_INT;
             lval->flags = FLAGS_NONE;
-            immedlit(litlab,lval->const_val);
-            nl();
+            gen_load_literal_address(litlab,lval->const_val);
             return 0;
         } else if ((ptr = findloc(sname))) {
-            lval->base_offset = getloc(ptr, 0);
+            lval->base_offset = gen_load_auto_address(ptr, 0);
             lval->offset = 0;
             lval->symbol = ptr;
             lval->ltype = ptr->ctype;
@@ -106,7 +105,7 @@ int primary(LVALUE* lval)
                     return (1);
                 }
                 /* Handle arrays... */
-                address(ptr);
+                gen_load_address(ptr);
                 /* djm sommat here about pointer types? */
                 lval->indirect_kind = lval->ptr_type = ptr->type;
                 if ( ispointer(lval->ltype) || lval->ltype->kind == KIND_ARRAY )
@@ -330,9 +329,7 @@ int widen(LVALUE* lval, LVALUE* lval2)
     if (lval2->val_type == KIND_DOUBLE) {
         if (lval->val_type != KIND_DOUBLE) {
             dpush_under(lval->ltype->kind); /* push 2nd operand UNDER 1st */
-            mainpop();
-            if (lval->val_type == KIND_LONG)
-                zpop();
+            gen_pop_primary(lval->val_type);
             zconvert_to_double(lval->val_type, lval->ltype->isunsigned);
             DoubSwap();
             lval->val_type = KIND_DOUBLE; /* type of result */
@@ -573,7 +570,7 @@ void store(LVALUE* lval)
     if ( lval->symbol ) 
         lval->symbol->isassigned = YES;
     if (lval->symbol && (lval->symbol->type == KIND_PORT8 || lval->symbol->type == KIND_PORT16) ) {
-        intrinsic_out(lval->symbol);
+        gen_intrinsic_out(lval->symbol);
     } else if (lval->indirect_kind == KIND_NONE)
         putmem(lval->symbol);
     else
@@ -652,10 +649,9 @@ void rvaluest(LVALUE* lval)
     }
 
     if (lval->symbol && (lval->symbol->type == KIND_PORT8  || lval->symbol->type == KIND_PORT16) ) {
-        intrinsic_in(lval->symbol);
+        gen_intrinsic_in(lval->symbol);
     } else if (lval->symbol && lval->indirect_kind == KIND_NONE) {
-       
-        getmem(lval->symbol);
+        gen_load_memory(lval->symbol);
     } else {
         indirect(lval);
     }
@@ -668,9 +664,9 @@ void rvalue(LVALUE* lval)
         warningfmt("maybe-uninitialized","Variable '%s' may be used before initialisation", lval->symbol->name);
     }
     if (lval->symbol && (lval->symbol->type == KIND_PORT8  || lval->symbol->type == KIND_PORT16) ) {
-        intrinsic_in(lval->symbol);
+        gen_intrinsic_in(lval->symbol);
     } else if (lval->symbol && lval->indirect_kind == KIND_NONE) {
-        getmem(lval->symbol);
+        gen_load_memory(lval->symbol);
     } else {           
         indirect(lval);
     }

@@ -73,7 +73,7 @@ int dolabel()
             }
             debug(DBG_GOTO, "Adding label not called %s\n", sname);
             ptr->offset.i = Zsp; /* Save stack for label */
-            postlabel(ptr->size = getlabel());
+            gen_auto_label(ptr->size = getlabel());
             return (1);
         }
     }
@@ -184,7 +184,7 @@ void ChaseGoto(SYMBOL* ptr)
         debug(DBG_GOTO, "Chasing %s # %d\n", ptr->name, i);
         if (gptr->sym == ptr && gptr->sp == Zsp) {
             debug(DBG_GOTO, "Matched #%d \n", i);
-            postlabel(gptr->label);
+            gen_auto_label(gptr->label);
             gptr->sym = NULL;
         }
         gptr++;
@@ -208,7 +208,7 @@ void goto_cleanup(void)
     for (i = 0; i < gotocnt; i++) {
         if (gptr->sym) {
             debug(DBG_GOTO, "Cleaning %s #%d\n", gptr->sym->name, i);
-            postlabel(gptr->label);
+            gen_auto_label(gptr->label);
             modstk((gptr->sym->offset.i) - (gptr->sp), KIND_NONE, NO, YES);
             jump(gptr->sym->size); /* label label(!) */
         }

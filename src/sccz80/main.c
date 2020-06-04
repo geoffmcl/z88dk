@@ -459,8 +459,7 @@ static void dumpfns()
                 if ( storage == EXTERNP ) {
                     outfmt("\tdefc\t"); outname(ptr->name,1); outfmt("\t= %d\n", ptr->ctype->value);
                 } else if ( storage != LSTATIC && storage != TYPDEF ) {
-                    GlobalPrefix();                    
-                    outname(ptr->name, dopref(ptr)); nl();
+                    gen_global_scope(ptr->name, ptr);
                 }
             }
         }
@@ -578,9 +577,7 @@ void dumpvars()
             if ( ptr->ctype->size == -1 )
                 continue;
             if ( ptr->bss_section ) output_section(ptr->bss_section);
-            prefix();
-            outname(ptr->name, 1);
-            col();
+            gen_label(ptr->name, NULL);
             defstorage();
             outdec(ptr->ctype->size);
             nl();
@@ -606,10 +603,7 @@ void dumplits(
     if (queueptr) {
         if (pr_label) {
             output_section(c_rodata_section); // output_section("text");
-            prefix();
-            queuelabel(queuelab);
-            col();
-            nl();
+            gen_auto_label(queuelab);
         }
         k = 0;
         while (k < queueptr) {

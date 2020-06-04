@@ -47,16 +47,78 @@
 extern void     callfunction(SYMBOL *ptr, Type *func_ptr_call_type);
 
 #include "codegen.h"
-extern void copy_to_stack(char *label, int stack_offset,  int size);
+extern void gen_comment(const char *line);
+extern void copy_to_stack(const char *label, int stack_offset,  int size);
 extern void copy_to_extern(const char *src, const char *dest, int size);
 extern void push_char_sdcc_style(void);
+extern void gen_switch_preamble(Kind kind);
+extern void gen_switch_case(Kind kind, int32_t value, int label);
+extern void gen_switch_postamble(Kind kind);
+extern void gen_push_pointer(Kind kind);
+extern void gen_builtin_strcpy(); 
+extern void gen_builtin_strchr(int32_t c); 
+extern void gen_builtin_memset(int32_t c, int32_t s);
+extern void gen_builtin_memcpy(int32_t src, int32_t n);
+extern void gen_leave_function(Kind save,char type, int incritical);
+extern void gen_load_literal_address(int lab,int offs);
+extern void gen_load_address(SYMBOL *ptr);
+extern void gen_load_memory(SYMBOL *sym);
+extern int gen_load_auto_address(SYMBOL *sym, int off);
+extern void gen_intrinsic_in(SYMBOL *sym);
+extern void gen_intrinsic_out(SYMBOL *sym);
+extern void gen_pop_primary(Kind kind);
+extern void gen_push_primary(Kind kind);
+extern void gen_global_scope(const char *name, SYMBOL *sym);
+
+extern void gen_auto_label(int label);
+extern void gen_label(const char *name, SYMBOL *sym);
+
+
+extern void zadd_const(LVALUE *lval, int32_t value);
+extern void zadd(LVALUE *);
+extern void zsub(LVALUE *);
+extern void mult(LVALUE *);
+extern void mult_const(LVALUE *lval, int32_t value);
+extern int mult_dconst(LVALUE *lval, double value, int isrhs);
+extern void zdiv(LVALUE *);
+extern void zdiv_const(LVALUE *lval, int32_t value);
+extern int zdiv_dconst(LVALUE *lval, double value, int isrhs);
+extern void zmod(LVALUE *);
+extern void zmod_const(LVALUE *lval, int32_t value);
+extern void zor(LVALUE *);
+extern void zor_const(LVALUE *lval, int32_t value);
+extern void zxor(LVALUE *);
+extern void zxor_const(LVALUE *lval, int32_t value);
+extern void zand(LVALUE *);
+extern void zand_const(LVALUE *lval, int32_t value);
+extern void asr(LVALUE *);
+extern void asr_const(LVALUE *lval, int32_t value);
+extern void asl(LVALUE *);
+extern void asl_const(LVALUE *lval, int32_t value);
+extern void lneg(LVALUE *);
+extern void neg(LVALUE *);
+extern void com(LVALUE *);
+extern void inc(LVALUE *);
+extern void dec(LVALUE *);
+extern void zeq(LVALUE *);
+extern void zeq_const(LVALUE *m, int32_t value);
+extern void eq0(LVALUE *,int label);
+extern void zne(LVALUE *);
+extern void zne_const(LVALUE *, int32_t value);
+extern void zlt(LVALUE *);
+extern void zlt_const(LVALUE *, int32_t value);
+extern void zle(LVALUE *);
+extern void zle_const(LVALUE *, int32_t value);
+extern void zgt(LVALUE *);
+extern void zgt_const(LVALUE *, int32_t value);
+extern void zge(LVALUE *);
+extern void zge_const(LVALUE *, int32_t value);
 
 /* const.c */
 extern int        constant(LVALUE *lval);
 extern int        fnumber(LVALUE *val);
 extern int        number(LVALUE *lval);
 extern int        hex(char c);
-extern void       address(SYMBOL *ptr);
 extern int        pstr(LVALUE *lval);
 extern int        tstr(int32_t *val);
 extern int        storeq(int length, unsigned char *queue,int32_t *val);
@@ -217,7 +279,6 @@ extern void     check_assign_range(Type *type, double const_value);
 
 /* stmt.c */
 extern int      statement(void);
-extern void     leave(Kind save,char type, int incritical);
 extern void     doasm(void);
 extern void     dopragma(void);
 extern void     doasmfunc(char wantbr);

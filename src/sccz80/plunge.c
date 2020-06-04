@@ -31,9 +31,9 @@ int skim(char* opstr, void (*testfuncz)(LVALUE* lval, int label), void (*testfun
 	    // TODO: Change to a carry?
             vconst(endval);
             jumpr(endlab = getlabel());
-            postlabel(droplab);
+            gen_auto_label(droplab);
             vconst(dropval);
-            postlabel(endlab);
+            gen_auto_label(endlab);
             lval->val_type = KIND_INT;
             lval->oldval_kind = KIND_INT;
             lval->ltype = type_int;
@@ -159,7 +159,7 @@ void plnge2a(int (*heir)(LVALUE* lval), LVALUE* lval, LVALUE* lval2, void (*oper
                     return;
                 }
             }
-            dpush();
+            gen_push_primary(KIND_DOUBLE);
 
 
             load_double_into_fa(lval);
@@ -174,7 +174,7 @@ void plnge2a(int (*heir)(LVALUE* lval), LVALUE* lval, LVALUE* lval2, void (*oper
                     return;
                 }
             }
-            dpush();
+            gen_push_primary(KIND_DOUBLE);
             zconvert_constant_to_double(lval->const_val, lval->ltype->isunsigned);
             lval->val_type = KIND_DOUBLE;
             lval->ltype = type_double;
@@ -189,7 +189,7 @@ void plnge2a(int (*heir)(LVALUE* lval), LVALUE* lval, LVALUE* lval2, void (*oper
             if ( oper == zdiv || oper == zmod || (operator_is_comparison(oper) && oper != zeq && oper != zne)) {
                 vlongconst_tostack(lval->const_val);
             } else {
-                lpush();
+                gen_push_primary(KIND_LONG);
                 vlongconst(lval->const_val);
             }
         } else {
@@ -206,20 +206,14 @@ void plnge2a(int (*heir)(LVALUE* lval), LVALUE* lval, LVALUE* lval2, void (*oper
         int  beforesp = Zsp;
         int savestkcount = stkcount;
         setstage(&before_constlval, &start_constlval);
-        if (lval->val_type == KIND_DOUBLE) {
-            dpush();
-        } else if (lval->val_type == KIND_CARRY) {
-
+        if (lval->val_type == KIND_CARRY) {
             force(KIND_INT, KIND_CARRY, 0, 0, 0);
             setstage(&before, &start);
             lval->val_type = lhs_val_type = KIND_INT;
             lval->ltype = type_int;
-            zpush();
-        } else if (lval->val_type == KIND_LONG || lval->val_type == KIND_CPTR) {
-             lpush();
-        } else {
-             zpush();
         }
+        gen_push_primary(lval->val_type);
+
         if (plnge1(heir, lval2))
             rvalue(lval2);
         rhs_val_type = lval2->val_type;
@@ -254,7 +248,7 @@ void plnge2a(int (*heir)(LVALUE* lval), LVALUE* lval, LVALUE* lval2, void (*oper
                          return;
                      }
                  }
-                dpush();
+                 gen_push_primary(KIND_DOUBLE);
                  load_double_into_fa(lval2);
                  lval2->val_type = KIND_DOUBLE;
                  lval2->ltype = type_double;
@@ -475,7 +469,7 @@ void plnge2b(int (*heir)(LVALUE* lval), LVALUE* lval, LVALUE* lval2, void (*oper
                 lval2->ltype = type_double;
             }
             doconst_oper = 0; // No const operator for double
-            dpush();
+            gen_push_primary(KIND_DOUBLE);
             load_double_into_fa(lval); // LHS 
             if ( oper == zsub ) {
                 DoubSwap();
@@ -483,7 +477,7 @@ void plnge2b(int (*heir)(LVALUE* lval), LVALUE* lval, LVALUE* lval2, void (*oper
         } else if ( lval2->val_type == KIND_DOUBLE && lval2->is_const == 0 ) { 
             doconst_oper = 0; // No const operator for double
             /* FA holds the right hand side */
-            dpush();
+            gen_push_primary(KIND_DOUBLE);
             if ( lval->val_type == KIND_DOUBLE ) {
                 load_double_into_fa(lval);
             } else {
@@ -502,7 +496,7 @@ void plnge2b(int (*heir)(LVALUE* lval), LVALUE* lval, LVALUE* lval2, void (*oper
             lval2->val_type = KIND_LONG; /* Kludge */
             lval2->ltype = lval2->ltype->isunsigned ? type_ulong : type_long; 
             if ( doconst_oper == 0 ) {
-                lpush();
+                gen_push_primary(KIND_LONG);
                 vlongconst(lval->const_val);
             }
         } else {
@@ -530,18 +524,13 @@ void plnge2b(int (*heir)(LVALUE* lval), LVALUE* lval, LVALUE* lval2, void (*oper
         int savesp1 = Zsp;
 
         setstage(&before1, &start1);
-        if (lval->val_type == KIND_DOUBLE) {
-            dpush();
-        } else if (lval->val_type == KIND_LONG || lval->val_type == KIND_CPTR) {
-            lpush();
-        } else {
-            if (lval->val_type == KIND_CARRY) {
-                zcarryconv();
-                lval->val_type = lhs_val_type = KIND_INT;
-                lval->ltype = type_int;
-            }
-            zpush();
+        if (lval->val_type == KIND_CARRY) {
+            zcarryconv();
+            lval->val_type = lhs_val_type = KIND_INT;
+            lval->ltype = type_int;
         }
+        gen_push_primary(lval->val_type);
+
         if (plnge1(heir, lval2))
             rvalue(lval2);
         rhs_val_type = lval2->val_type;
@@ -555,7 +544,7 @@ void plnge2b(int (*heir)(LVALUE* lval), LVALUE* lval, LVALUE* lval2, void (*oper
                 force(KIND_DOUBLE, lval->val_type, NO, lval->ltype->isunsigned, 0);
                 lval->val_type = KIND_DOUBLE;
                 lval->ltype = type_double;
-                dpush();
+                gen_push_primary(KIND_DOUBLE);
                 load_double_into_fa(lval2);
                 (*oper)(lval);
                 return;

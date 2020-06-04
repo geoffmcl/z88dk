@@ -84,8 +84,7 @@ int constant(LVALUE* lval)
         lval->ptr_type = KIND_CHAR; /* djm 9/3/99 */
         lval->val_type = KIND_INT;
         lval->flags = FLAGS_NONE;
-        immedlit(litlab,lval->const_val);
-        nl();
+        gen_load_literal_address(litlab,lval->const_val);
         return (1);
     } 
     lval->is_const = 0;
@@ -256,17 +255,6 @@ int hex(char c)
     return ((c1 >= '0' && c1 <= '9') || (c1 >= 'A' && c1 <= 'F'));
 }
 
-/* djm, seems to load up literal address? */
-
-void address(SYMBOL* ptr)
-{
-    immed();
-    outname(ptr->name, dopref(ptr));
-    nl();
-    if ( ptr->ctype->kind == KIND_CPTR ) {
-        const2(0);
-    }
-}
 
 int pstr(LVALUE *lval)
 {
@@ -934,10 +922,7 @@ void write_double_queue(void)
     LL_FOREACH(double_queue, elem ) {
         if ( elem->written ) {
             output_section(c_rodata_section); // output_section("text");
-            prefix();
-            queuelabel(elem->litlab);
-            col();
-            nl();
+            gen_auto_label(elem->litlab);
             if ( c_double_strings ) {
                 defmesg(); outstr(elem->str); outstr("\"\n");
                 defbyte(); outdec(0); nl();
@@ -1012,8 +997,7 @@ void load_double_into_fa(LVALUE *lval)
         snprintf(buf, sizeof(buf), "%lf", lval->const_val);
         elem = get_elem_for_buf(buf, lval->const_val);
         elem->refcount++;
-        immedlit(elem->litlab,0);
-        nl();
+        gen_load_literal_address(elem->litlab,0);
         callrts("__atof2");
         WriteDefined("math_atof", 1);
     } else {
@@ -1027,8 +1011,7 @@ void load_double_into_fa(LVALUE *lval)
         } else {
             elem = get_elem_for_fa(fa,lval->const_val);
             elem->refcount++;
-            immedlit(elem->litlab,0);
-            nl();
+            gen_load_literal_address(elem->litlab,0);
             callrts("dload");
         }
     }
