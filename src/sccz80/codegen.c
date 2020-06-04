@@ -4849,7 +4849,7 @@ void gen_label(const char *name, SYMBOL *sym)
 
 void gen_global_scope(const char *name, SYMBOL *sym)
 {
-    outfmt("\tGLOBAL%s%s\n", sym == NULL || dopref(sym)  ? Z80ASM_PREFIX : "", name);
+    outfmt("\tGLOBAL\t%s%s\n", sym == NULL || dopref(sym)  ? Z80ASM_PREFIX : "", name);
 }
 
 /*
