@@ -34,15 +34,16 @@
 
 
 	SECTION	bss_compiler
-._sendbuf	defs	10
+._sendbuf
+	defs	10
 	SECTION	code_compiler
 
 
 
-	GLOBAL	_zx_border
-	GLOBAL	_sendMsg
-	GLOBAL	_sendbuf
-	GLOBAL	_sendJoinTeam
+	GLOBAL_zx_border
+	GLOBAL_sendMsg
+	GLOBAL_sendbuf
+	GLOBAL_sendJoinTeam
 
 
 

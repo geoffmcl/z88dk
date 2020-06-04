@@ -47,13 +47,15 @@
 
 
 	SECTION	bss_compiler
-._points	defs	2
-._level	defs	1
+._points
+	defs	2
+._level
+	defs	1
 	SECTION	code_compiler
 
 
 
-	GLOBAL	_func
+	GLOBAL_func
 
 
 

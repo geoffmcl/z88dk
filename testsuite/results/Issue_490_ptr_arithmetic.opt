@@ -131,16 +131,17 @@
 
 
 	SECTION	bss_compiler
-._st_func_double_static_arr	defs	30
+._st_func_double_static_arr
+	defs	30
 	SECTION	code_compiler
 
 
 
-	GLOBAL	_func_char
-	GLOBAL	_func_int
-	GLOBAL	_func_long
-	GLOBAL	_func_double
-	GLOBAL	_func_double_static
+	GLOBAL_func_char
+	GLOBAL_func_int
+	GLOBAL_func_long
+	GLOBAL_func_double
+	GLOBAL_func_double_static
 
 
 

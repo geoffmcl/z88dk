@@ -54,16 +54,17 @@
 
 
 	SECTION	bss_compiler
-._x	defs	2
+._x
+	defs	2
 	SECTION	code_compiler
 
 
 
-	GLOBAL	_x
-	GLOBAL	_isr1
-	GLOBAL	__im2_isr_8080_isr1
-	GLOBAL	_isr2
-	GLOBAL	__im2_isr_isr2
+	GLOBAL_x
+	GLOBAL_isr1
+	GLOBAL__im2_isr_8080_isr1
+	GLOBAL_isr2
+	GLOBAL__im2_isr_isr2
 
 
 

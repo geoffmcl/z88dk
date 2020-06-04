@@ -19,15 +19,17 @@
 
 
 	SECTION	bss_compiler
-._foo	defs	10
-._bar	defs	6
+._foo
+	defs	10
+._bar
+	defs	6
 	SECTION	code_compiler
 
 
 
-	GLOBAL	_foo
-	GLOBAL	_bar
-	GLOBAL	_func
+	GLOBAL_foo
+	GLOBAL_bar
+	GLOBAL_func
 
 
 

@@ -207,19 +207,20 @@
 
 
 	SECTION	bss_compiler
-._array	defs	30
+._array
+	defs	30
 	SECTION	code_compiler
 
 
 
-	GLOBAL	_ptr_char
-	GLOBAL	_ptr_int
-	GLOBAL	_ptr_long
-	GLOBAL	_ptr_double
-	GLOBAL	_ptr_struct
-	GLOBAL	_struct_offset1
-	GLOBAL	_struct_offset2
-	GLOBAL	_struct_offset3
+	GLOBAL_ptr_char
+	GLOBAL_ptr_int
+	GLOBAL_ptr_long
+	GLOBAL_ptr_double
+	GLOBAL_ptr_struct
+	GLOBAL_struct_offset1
+	GLOBAL_struct_offset2
+	GLOBAL_struct_offset3
 
 
 

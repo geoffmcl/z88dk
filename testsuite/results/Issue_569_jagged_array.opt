@@ -93,14 +93,15 @@
 
 
 	SECTION	bss_compiler
-.__starField	defs	768
+.__starField
+	defs	768
 	SECTION	code_compiler
 
 
 
-	GLOBAL	__starField
-	GLOBAL	_starField
-	GLOBAL	_main
+	GLOBAL__starField
+	GLOBAL_starField
+	GLOBAL_main
 
 
 

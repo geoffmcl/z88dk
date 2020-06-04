@@ -94,19 +94,22 @@
 
 
 	SECTION	bss_compiler
-._x	defs	14
-._y	defs	14
-._z	defs	2
+._x
+	defs	14
+._y
+	defs	14
+._z
+	defs	2
 	SECTION	code_compiler
 
 
 
-	GLOBAL	_func_global_assign
-	GLOBAL	_func_global_assign_to_pointer
-	GLOBAL	_func_global_assign_from_pointer
-	GLOBAL	_func_local_assign
-	GLOBAL	_func_local_assign_to_pointer
-	GLOBAL	_func_local_assign_from_pointer
+	GLOBAL_func_global_assign
+	GLOBAL_func_global_assign_to_pointer
+	GLOBAL_func_global_assign_from_pointer
+	GLOBAL_func_local_assign
+	GLOBAL_func_local_assign_to_pointer
+	GLOBAL_func_local_assign_from_pointer
 
 
 

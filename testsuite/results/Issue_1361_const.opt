@@ -15,13 +15,14 @@
 
 
 	SECTION	bss_compiler
-._array	defs	2
+._array
+	defs	2
 	SECTION	code_compiler
 
 
 
-	GLOBAL	_array
-	GLOBAL	_constructItems
+	GLOBAL_array
+	GLOBAL_constructItems
 
 
 

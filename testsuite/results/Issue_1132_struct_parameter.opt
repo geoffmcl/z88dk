@@ -78,15 +78,16 @@
 
 
 	SECTION	bss_compiler
-._fnptr	defs	2
+._fnptr
+	defs	2
 	SECTION	code_compiler
 
 
 
-	GLOBAL	_func
-	GLOBAL	_func_callee
-	GLOBAL	_func_calling
-	GLOBAL	_func_fptr
+	GLOBAL_func
+	GLOBAL_func_callee
+	GLOBAL_func_calling
+	GLOBAL_func_fptr
 
 
 

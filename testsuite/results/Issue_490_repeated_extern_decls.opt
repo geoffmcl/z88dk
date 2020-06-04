@@ -22,14 +22,15 @@
 
 
 	SECTION	bss_compiler
-._a	defs	2
+._a
+	defs	2
 	SECTION	code_compiler
 
 
 
-	GLOBAL	_a
-	GLOBAL	_func1
-	GLOBAL	_func2
+	GLOBAL_a
+	GLOBAL_func1
+	GLOBAL_func2
 
 
 

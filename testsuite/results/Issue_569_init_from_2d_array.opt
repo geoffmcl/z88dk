@@ -17,14 +17,15 @@
 
 
 	SECTION	bss_compiler
-._a	defs	40
+._a
+	defs	40
 	SECTION	code_compiler
 
 
 
-	GLOBAL	_a
-	GLOBAL	_b
-	GLOBAL	_c
+	GLOBAL_a
+	GLOBAL_b
+	GLOBAL_c
 
 
 

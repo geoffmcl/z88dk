@@ -213,28 +213,29 @@
 
 
 	SECTION	bss_compiler
-._y	defs	2
+._y
+	defs	2
 	SECTION	code_compiler
 
 
 
-	GLOBAL	_x
-	GLOBAL	_func1
-	GLOBAL	_func1a
-	GLOBAL	_func1b
-	GLOBAL	_func1c
-	GLOBAL	_y
-	GLOBAL	_func2
-	GLOBAL	_func2a
-	GLOBAL	_func2b
-	GLOBAL	_z
-	GLOBAL	_func3
-	GLOBAL	_func3a
-	GLOBAL	_func3b
-	GLOBAL	_t4
-	GLOBAL	_func4
-	GLOBAL	_func4a
-	GLOBAL	_func4b
+	GLOBAL_x
+	GLOBAL_func1
+	GLOBAL_func1a
+	GLOBAL_func1b
+	GLOBAL_func1c
+	GLOBAL_y
+	GLOBAL_func2
+	GLOBAL_func2a
+	GLOBAL_func2b
+	GLOBAL_z
+	GLOBAL_func3
+	GLOBAL_func3a
+	GLOBAL_func3b
+	GLOBAL_t4
+	GLOBAL_func4
+	GLOBAL_func4a
+	GLOBAL_func4b
 
 
 

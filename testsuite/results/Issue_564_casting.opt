@@ -67,18 +67,19 @@
 
 
 	SECTION	bss_compiler
-._item	defs	6
+._item
+	defs	6
 	SECTION	code_compiler
 
 
 
-	GLOBAL	_value
-	GLOBAL	_func3
-	GLOBAL	_func2
-	GLOBAL	_func
-	GLOBAL	_item
-	GLOBAL	_func4
-	GLOBAL	_func5
+	GLOBAL_value
+	GLOBAL_func3
+	GLOBAL_func2
+	GLOBAL_func
+	GLOBAL_item
+	GLOBAL_func4
+	GLOBAL_func5
 
 
 

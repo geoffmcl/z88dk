@@ -45,19 +45,20 @@
 
 
 	SECTION	bss_compiler
-._y	defs	2
+._y
+	defs	2
 	SECTION	code_compiler
 
 
 
-	GLOBAL	_set1
-	GLOBAL	_set2
-	GLOBAL	_x
-	GLOBAL	_y
-	GLOBAL	_function
-	GLOBAL	_function2
-	GLOBAL	_z
-	GLOBAL	_func3
+	GLOBAL_set1
+	GLOBAL_set2
+	GLOBAL_x
+	GLOBAL_y
+	GLOBAL_function
+	GLOBAL_function2
+	GLOBAL_z
+	GLOBAL_func3
 
 
 

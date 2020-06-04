@@ -39,14 +39,16 @@
 
 
 	SECTION	bss_compiler
-._x	defs	2
-._y	defs	2
+._x
+	defs	2
+._y
+	defs	2
 	SECTION	code_compiler
 
 
 
-	GLOBAL	_func
-	GLOBAL	_func2
+	GLOBAL_func
+	GLOBAL_func2
 
 
 

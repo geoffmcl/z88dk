@@ -70,24 +70,26 @@
 
 
 	SECTION	bss_compiler
-._s	defs	104
-._ptr	defs	2
+._s
+	defs	104
+._ptr
+	defs	2
 	SECTION	code_compiler
 
 
 
-	GLOBAL	_s
-	GLOBAL	_ptr
-	GLOBAL	_func1
-	GLOBAL	_func1a
-	GLOBAL	_func1b
-	GLOBAL	_func1c
-	GLOBAL	_func1d
-	GLOBAL	_func2
-	GLOBAL	_func2a
-	GLOBAL	_func2b
-	GLOBAL	_func2c
-	GLOBAL	_func2d
+	GLOBAL_s
+	GLOBAL_ptr
+	GLOBAL_func1
+	GLOBAL_func1a
+	GLOBAL_func1b
+	GLOBAL_func1c
+	GLOBAL_func1d
+	GLOBAL_func2
+	GLOBAL_func2a
+	GLOBAL_func2b
+	GLOBAL_func2c
+	GLOBAL_func2d
 
 
 

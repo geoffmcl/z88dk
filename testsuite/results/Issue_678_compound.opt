@@ -112,16 +112,18 @@
 
 
 	SECTION	bss_compiler
-._version	defs	1
-._mem_size	defs	4
+._version
+	defs	1
+._mem_size
+	defs	4
 	SECTION	code_compiler
 
 
 
-	GLOBAL	_test
-	GLOBAL	_test_or
-	GLOBAL	_test_value
-	GLOBAL	_test_value_and
+	GLOBAL_test
+	GLOBAL_test_or
+	GLOBAL_test_value
+	GLOBAL_test_value_and
 
 
 

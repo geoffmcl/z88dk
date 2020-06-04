@@ -34,14 +34,15 @@
 
 
 	SECTION	bss_compiler
-._a	defs	2
+._a
+	defs	2
 	SECTION	code_compiler
 
 
 
-	GLOBAL	_a
-	GLOBAL	_main
-	GLOBAL	_test
+	GLOBAL_a
+	GLOBAL_main
+	GLOBAL_test
 
 
 

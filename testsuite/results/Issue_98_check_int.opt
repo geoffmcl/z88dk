@@ -178,26 +178,27 @@
 
 
 	SECTION	bss_compiler
-._g	defs	2
+._g
+	defs	2
 	SECTION	code_compiler
 
 
 
-	GLOBAL	_g
-	GLOBAL	_mul
-	GLOBAL	_mul2
-	GLOBAL	_mul3
-	GLOBAL	_mul3_2
-	GLOBAL	_div
-	GLOBAL	_div2
-	GLOBAL	_div3
-	GLOBAL	_add
-	GLOBAL	_add2
-	GLOBAL	_sub
-	GLOBAL	_sub_1
-	GLOBAL	_sub2
-	GLOBAL	_sub2_1
-	GLOBAL	_sub3
+	GLOBAL_g
+	GLOBAL_mul
+	GLOBAL_mul2
+	GLOBAL_mul3
+	GLOBAL_mul3_2
+	GLOBAL_div
+	GLOBAL_div2
+	GLOBAL_div3
+	GLOBAL_add
+	GLOBAL_add2
+	GLOBAL_sub
+	GLOBAL_sub_1
+	GLOBAL_sub2
+	GLOBAL_sub2_1
+	GLOBAL_sub3
 
 
 

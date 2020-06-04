@@ -75,16 +75,18 @@
 
 
 	SECTION	bss_compiler
-._funcptr	defs	3
-._funcptr2	defs	3
+._funcptr
+	defs	3
+._funcptr2
+	defs	3
 	SECTION	code_compiler
 
 
 
-	GLOBAL	_funcptr
-	GLOBAL	_funcptr2
-	GLOBAL	_func
-	GLOBAL	_func2
+	GLOBAL_funcptr
+	GLOBAL_funcptr2
+	GLOBAL_func
+	GLOBAL_func2
 
 
 

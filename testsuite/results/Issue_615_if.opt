@@ -88,24 +88,25 @@
 
 
 	SECTION	bss_compiler
-._var	defs	2
+._var
+	defs	2
 	SECTION	code_compiler
 
 
 
-	GLOBAL	_resultif
-	GLOBAL	_resultelse
-	GLOBAL	_resultelseif
-	GLOBAL	_var
-	GLOBAL	_func1
-	GLOBAL	_func1a
-	GLOBAL	_func1b
-	GLOBAL	_func1c
-	GLOBAL	_func2
-	GLOBAL	_func2a
-	GLOBAL	_func2b
-	GLOBAL	_func3
-	GLOBAL	_func3a
+	GLOBAL_resultif
+	GLOBAL_resultelse
+	GLOBAL_resultelseif
+	GLOBAL_var
+	GLOBAL_func1
+	GLOBAL_func1a
+	GLOBAL_func1b
+	GLOBAL_func1c
+	GLOBAL_func2
+	GLOBAL_func2a
+	GLOBAL_func2b
+	GLOBAL_func3
+	GLOBAL_func3a
 
 
 
