@@ -238,152 +238,115 @@ Assembler directives (```ORG```, ```INCLUDE```, ...) and processor opcodes (```N
 
 ## Object File Format
 
-The object and library files are stored in binary form as a set of contiguous objects, i.e. each section follows the previous one without any end-markers. The files are cross-platform compatible, i.e. they can be created in a big-endian architecture and used in a little-endian one. 
+The object and library files are stored in binary form as a set of contiguous sections. The files are cross-platform compatible, i.e. they can be created in a big-endian architecture and used in a little-endian one. 
 
-The files start with a signature and a version number, that is parsed by the assembler.
+The files start with a signature and a version number.
 
 A set of file pointers at the start of the object file point to the start of each section existing the in the file, or contain *0xFFFFFFFF* (-1) if that section does not exist.
 
 The following object types exist in the file:
 
-* *char* :	one byte containing an ASCII character;
-
-* *byte* :	one 8-bit value;
-
-* *word* :	one 16-bit value, stored in low byte - high byte order (little-endian format - Z80/Intel notation);
-
-* *long* :	one 32-bit value, stored in low byte - high byte order;
-
-* *string*:	one byte containing the string length followed by the characters of the string;
-
-* *lstring*: one word containing the string length followed by the characters of the string.
+| Type      | Size (bytes)  | Description                                       |
+| ---       | ---           | ---                                               |
+| *char*    | 1             | ASCII character                                   |
+| *byte*    | 1             | unsigned 8-bit value                              |
+| *word*    | 2             | unsigned 16-bit value, little-endian (Z80/Intel)  |
+| *dword*   | 4             | signed 32-bit value, little-endian (Z80/Intel)    |
+| *string*  | 1+length      | one byte with the string length followed by the characters of the string |
+| *lstring* | 2+length      | one word with the string length followed by the characters of the string |
 
 ### Object Files
 
 The format of the object files is as follows:
 
-    |Addr | Type   | Object                                                 |  
-    +-----+--------+--------------------------------------------------------+  
-    |   0 | char[8]| 'Z80RMF14' (file signature and version)                |  
-    |   8 | long   | File pointer to *Module Name*, always the last section |  
-    |  12 | long   | File pointer to *Expressions*, may be -1               |  
-    |  16 | long   | File pointer to *Defined Symbols*, may be -1           |  
-    |  20 | long   | File pointer to *External Symbols*, may be -1          |  
-    |  24 | long   | File pointer to *Binary Code Sections*, may be -1      |  
-    |  28 |        | *Expressions*                                          |  
-    |     |        | ...                                                    |  
-    |     |        | *Defined Symbols*                                      |  
-    |     |        | ...                                                    |  
-    |     |        | *External Symbols*                                     |  
-    |     |        | ...                                                    |  
-    |     |        | *Module Name*                                          |  
-    |     |        | *Binary Code Sections*                                 |  
-
-
-* *Expressions* : contains a set of expressions up to an end marker (*type* = 0). Each expression has the following format:
-
-  * *type* (char) : defines the resulting evaluation type range:   
-     *  0  : end marker 
-     * 'U' : 8-bit integer (0 to 255)  
-     * 'S' : 8-bit signed integer (-128 to 127)  
-     * 'u' : 8-bit integer (0 to 255) extended to 16 bits (appending a 0)  
-     * 's' : 8-bit signed integer (-128 to 127) sign-extended to 16 bits (appending a 0xff if negative or 0 otherwise)  
-     * 'C' : 16-bit integer, little-endian (-32768 to 65535)  
-     * 'B' : 16-bit integer, big-endian (-32768 to 65535)  
-     * 'P' : 24-bit signed integer     
-     * 'L' : 32-bit signed integer     
-     * 'J' : 8-bit jump relative offset
-     * '=' : computed name at link time   
-
-  * *sourcefile* (lstring) : source file name where expression was defined, to be used in error messages. May be an empty string, signaling that the previous *sourcefile* of the previous expression should be used.
-
-  * *line_number* (long) : line number in source file where expression was defined, to be used in error messages.
-
-  * *section* (string) : source file section name where expression was defined. 
-
-  * *ASMPC* (word) : defines the relative module code address of the start of the assembly instruction to be used as *ASMPC* during expression evaluation.
-
-  * *patchptr* (word) : defines the relative module code patch pointer to store the result of evaluating the expression.
-
-  * *target_name* (string) : contains the name of the symbol that receives the result of evaluating the expression, only used for '=' type expressions, empty string for the other types.
-	
-  * *expression* (lstring) : contains the expression text as parsed from the source file, in the standard C-like expression syntax.
-
-* *Defined Symbols* : contains a set of names defined in this module up to the next existing section. Each name has the following format:
-
-  * *scope* (char) : defines the scope of the name:
-     *  0  : end marker
-     * 'L' is local,  
-     * 'G' is global,  
-
-  * *type (char) : defines whether it is a: 
-     * 'A' relocatable address,   
-     * 'C' a constant.
-     * '=' a symbol computed at link time, the corresponding expression is in the *Expressions* section.
-
-  * *section* (string) : source file section name where name was defined. 
-
-  * *value* (long) : contains the absolute value for a constant, or the relative address to the start of the code  lock for a relocatable address.
-	
-  * *name* (string) : contains the name.
-
-  * *filename* (string) : contains the source file name where the symbol was defined.
-
-  * *line_nr* (long) : contains the source line number where the symbols was defined.
-
-* *External Symbols* : contains a set of external symbols referred by this module. Each name has the following format:
-  
-	* *name* (string) : contains the name.   
-
-* *Module Name* (string) : contains the module name.
-
-* *Binary Code Sections* : contains the binary code of the module with the following format:
-
-  * *length* (long) : defines the total code length, and contains -1 to signal the end.
-
-  * *section* (string) : source file section name. 
- 
-  * *ORG Address* (long) : contains the user defined ORG address for the start of this section, -1 for no ORG address was defined, or -2 to split section to a different binary file. If multiple sections are given with an ORG address each, the assembler generates one binary file for each section with a defined ORG, followed by all sections without one.
-
-  * *ALIGN* (long) : defines the address alignment of this section, -1 if not defined. The previous section is padded to align the start address of this section.
-
-  * *code* (byte[length]) : contains the binary code.
-
+| Addr  | Type      | Value     | Description
+| ---   | ---       | ---       | ---
+|   0   | char[8]   | "Z80RMF14"| File signature and version
+|   8   | dword     | pmodule   | File pointer to *Module Name*, always the last section
+|  12   | dword     | pexpr     | File pointer to *Expressions*, may be -1
+|  16   | dword     | pnames    | File pointer to *Defined Symbols*, may be -1
+|  20   | dword     | pextern   | File pointer to *External Symbols*, may be -1
+|  24   | dword     | pcode     | File pointer to *Code Sections*, may be -1
+| pexpr |           |           | *Expressions*: set of expressions up to end marker
+|       | char      | type      | Type of expression
+|       |           |  0        | end marker 
+|       |           | 'U'       | 8-bit integer (0 to 255)  
+|       |           | 'S'       | 8-bit signed integer (-128 to 127)  
+|       |           | 'u'       | 8-bit integer (0 to 255) extended to 16 bits
+|       |           | 's'       | 8-bit signed integer (-128 to 127) sign-extended to 16 bits
+|       |           | 'C'       | 16-bit integer, little-endian (-32768 to 65535)  
+|       |           | 'B'       | 16-bit integer, big-endian (-32768 to 65535)  
+|       |           | 'P'       | 24-bit signed integer     
+|       |           | 'L'       | 32-bit signed integer     
+|       |           | 'J'       | 8-bit jump relative offset
+|       |           | '='       | Computed name at link time   
+|       | lstring   | sourcefile| Source file name of expression definition, empty to reuse same from previous expression
+|       | dword     | linenumber| Line number in source file of expression definition
+|       | string    | section   | Section name of expression definition 
+|       | word      | ASMPC     | Relative module code address of the start of the assembly instruction to be used as *ASMPC* during expression evaluation
+|       | word      | patchptr  | Relative module code patch pointer to store the result of evaluating the expression
+|       | string    | targetname| Name of the symbol that receives the result of evaluating the expression, only used for '=' type expressions, empty string for the other types
+|       | lstring   | expression| Expression text as parsed from the source file
+|       |           |           | ... repeat for every expression ...
+| pnames|           |           | *Defined Symbols*: set of defined symbols up to end marker
+|       | char      | scope     | Scope of the symbol:
+|       |           |  0        | end marker
+|       |           | 'L'       | is local
+|       |           | 'G'       | is global
+|       | char      | type      | Type of symbol: 
+|       |           | 'A'       | Relocatable address   
+|       |           | 'C'       | Constant
+|       |           | '='       | Symbol computed at link time, the corresponding expression is in the *Expressions* section
+|       | string    | section   | Section name of symbol definition 
+|       | dword     | value     | Absolute value for a constant, or the relative address to the start of the code block for a relocatable address
+|       | string    | name      | Name of symbol
+|       | string    | sourcefile| Source file name of symbol definition
+|       | dword     | linenumber| Line number in source file of symnbol definition
+|       |           |           | ... repeat for every symbol ...
+|pextern|           |           | *External Symbols*: set of external symbols referred in the module, up *Module Name*
+|       | string    | name      | Name of external symbol
+|       |           |           | ... repeat for every symbol ...
+|pmodule| string    | modname   | *Module Name*: Name of the module
+| pcode |           |           | *Code Sections*: set of sections of binary code, up to end marker
+|       | dword     | length    | Code length, -1 to signal the end
+|       | string    | section   | Section name of code
+|       | dword     | origin    | User defined ORG address for the start of this section, -1 for no ORG address was defined, or -2 to split section to a different binary file. If multiple sections are given with an ORG address each, the assembler generates one binary file for each section with a defined ORG, followed by all sections without one.
+|       | dword     | align     | Address alignment of this section, -1 if not defined. The previous section is padded to align the start address of this section.
+|       |byte[length]|code      | Binary code
+|       |           |           | ... repeat for every section ...
 
 ### Library File Format
 
 The library file format is a sequence of object files with additional
 structures.
 
-    |Addr | Type   | Object                                                 |
-    +-----+--------+--------------------------------------------------------+
-    |   0 | char[8]| 'Z80LMF14' (file signature and version)                |
-    |   8 | word   | *Object File Block*                                    |
-    |     |        | ...                                                    |
-
-* *Object File Block* : contains the following format: 
-
-  * *next* (long) : contains the file pointer of the next object file in the library, or -1 if this object file is the last in the library.
-
-  * *length* (long) : contains the length of this object file, or 0 if this object files has been marked "deleted" and will not be used.
+| Addr  | Type      | Value     | Description
+| ---   | ---       | ---       | ---
+|   0   | char[8]   | "Z80LMF14"| File signature and version
+| obj   |           |           | *Object File Block*, repeats for every object module
+|       | dword     | next      | File pointer of the next object file in the library, -1 if this is the last one
+|       | dword     | length    | Length of this object file, or 0 if this object files has been marked "deleted" and will not be used
+|       |byte[length]| obj      | Object file
+|       |           |           | ... repeat for every object file ...
 
 ### Format History
 
-* version *01* : original z80asm version
-* version *02* : allow expressions to use standard C operators instead of the original (legacy) z80asm specific syntax. 
-* version *03* : include the address of the start of the assembly instruction in the object file, so that expressions with ASMPC are correctly computed at link time; remove type 'X' symbols (global library), no longer used.
-* version *04* : include the source file location of expressions in order to give meaningful link-time error messages.
-* version *05* : include source code sections.
-* version *06* : incomplete implementation, fixed in version *07*
-* version *07* : include *DEFC* symbols that are defined as an expression using other symbols and are computed at link time, after all addresses are allocated.
-* version *08* : include a user defined ORG address per section.
-* version *09* : include the file and line number where each symbol was defined.
-* version *10* : allow a section alignment to be defined.
-* version *11* : allow big-endian 16-bit expressions to be patched; these big-endian values are used in the ZXN coper unit.
-* version *12* : allow the target expression of relative jumps to be computed in the link phase
-* version *13* : add 8-bit signed and unsigned values extended to 16-bits
-* version *14* : add 24-bit pointers
-
+| Version   | Commment
+| ---       | ---
+| 01        | original z80asm version
+| 02        | allow expressions to use standard C operators instead of the original (legacy) z80asm specific syntax. 
+| 03        | include the address of the start of the assembly instruction in the object file, so that expressions with ASMPC are correctly computed at link time; remove type 'X' symbols (global library), no longer used.
+| 04        | include the source file location of expressions in order to give meaningful link-time error messages.
+| 05        | include source code sections.
+| 06        | incomplete implementation, fixed in version *07*
+| 07        | include DEFC symbols that are defined as an expression using other symbols and are computed at link time, after all addresses are allocated.
+| 08        | include a user defined ORG address per section.
+| 09        | include the file and line number where each symbol was defined.
+| 10        | allow a section alignment to be defined.
+| 11        | allow big-endian 16-bit expressions to be patched; these big-endian values are used in the ZXN coper unit.
+| 12        | allow the target expression of relative jumps to be computed in the link phase
+| 13        | add 8-bit signed and unsigned values extended to 16-bits
+| 14        | add 24-bit pointers
 
 ## z80asm Syntax
 
@@ -1389,198 +1352,155 @@ The following error messages will be written toe the error files corresponding t
 *   "Cannot include file recursively"  
     A file was tried to be included which was already included at a previous include level. INCLUDE "a.h" cannot contain an INCLUDE "a.h".
 
-## File formats
+## Backlog
 
-### Object file format documentation
+- Doing
+    - Implement -E to generate pre-processed output in a .i file
 
-The structure of the object file format is designed exclusively for the Z80 Module Assembler. However, it may be useful for other programmers if they wish to use the file format for other purposes. We have included the documentation of the object file structure in this document. Improvement suggestions are welcome. We hope to have designed a simple and straightforward file format. The documentation may be necessary if you want to use the object file format in other systems.
+- Preprocessor
+    - Parse TASM input
+    - Parse Z80MR input
+    - high level structures
+    - macros
+    - architecture-specific macro-like opcodes
+    - architecture-specific character encoding
+    - JR to JP optimization for speed
+    - preprocessor
+    - separate scanner from preprocessor  
 
-I have created the design structure of the object file format to be suitable for future expansion. The primary aim of the design has been to maintain structure simplicity and load efficiency during link processing.
+- Assembler
+    - JP to JR optimization for size
+    - compile expressions
+    - object files store list of input files and command line so that -d can decide if it is necessary to recompile
+    - object files can store same code for multiple architectures
+    - recursive parsing of @lists
+    - environment variable to pass options to assembler
+    - parse expressions  
 
-The figure below has deliberately been split into sections to clarify the file structure, although there is no actual physical separation between the sections in the file; each section is immediately followed by the next. 16-bit and 32-bit values are stored in low byte - high byte order (Little endian format - Z80/Intel notation).
+- Linker
+    - section groups
+    - overlays
+    - absolute memory areas with holes
 
-The format of the object file is as follows:
+- Librarian
+    - object files and library files have an index of all defined symbols
 
-|Addr|Object|Type|Description|
-|--- |--- |--- |--- |
-||||**File header**|
-|0|'Z80RMF01'|8 chars|File type identifier|
-|8|ORG Address|16-bit|Contains the ORG address for the linked machine code or 0xFFFF for no ORG address defined.|
-|10|Module Name pointer|32-bit|Points to the Module Name section in the file.|
-|14|Expression Declaration pointer|32-bit|Points to the Expression Declaration section in the file, 0xFFFFFFFF if no expressions exist.|
-|18|Name Declaration pointer|32-bit|Points to the Name Declaration section in the file, 0xFFFFFFFF if no symbols exist.|
-|22|Library Name Declaration pointer|32-bit|Points to the Library Name Declaration section in the file, 0xFFFFFFFF if no library symbols imported.|
-|26|Machine Code Block pointer|32-bit|Points to the Machine Code Block section in the file, 0xFFFFFFFF if no code block exists.|
-||||**Expression Declaration section**<br>Defines expressions that need to be computed at link time.<br>The start of the Expression Declaration section is pointed by the address at location 14 in the object file.<br>The end of the section is marked by the first defined pointer of the following list: Name Declaration pointer, Library Name Declaration pointer and Module Name pointer. The last one is always defined.|
-||type|char|Type defines the resulting evaluation type range:<br>'U': 8-bit integer (0 to 255)<br>'S': 8-bit signed integer (-128 to 127)<br>'C': 16-bit integer (-32768 to 65535)<br>'L': 32-bit signed integer|
-||patchptr|16-bit|Defines the code patch pointer to store result, relative to the start of the code section.|
-||length|byte|Defines byte length of expression string.|
-||expression string|length, chars|Contains the infix expression parsed from the source file.|
-||end marker|byte|Zero byte end marker.|
-||...|...|...|
-||||**Name Declaration section**<br>Defines all the symbols defined in this module.<br>The start of the Name Declaration section is pointed by the address at location 18 in the object file.<br>The end of the section is marked by the first defined pointer of the following list: Library Name Declaration pointer and Module Name pointer. The last one is always defined.|
-||scope|char|Scope defines the scope of the name:<br>'L' is local,<br>'G' is global,<br>'X' is global library|
-||type|char|Type defines whether it is a:<br>'A' relocatable address,<br>'C' a constant|
-||value|32-bit|Value of the symbol in 32 bit, relative to the start of the code block for type 'A'.|
-||length|byte|Defines length byte of the following string.|
-||name|length, chars|Name of the symbol.|
-||...|...|...|
-||||**Library Name Declaration section**<br>Defines all the library reference names.<br>The start of the Library Name Declaration section is pointed by the address at location 22 in the object file.<br>The end of the section is marked by the Module Name pointer.|
-||name|length, chars|Name of the symbol.|
-||...|...|...|
-||||**Module Name section**<br>Defines the module name.<br>The start of the Module Name Section is pointed by the address at location 10 of the object file.|
-||name|length, chars|Name of the module.|
-||||**Machine Code section**<br>Contains the binary image of the compiled code.<br>The start of the Machine Code Section is pointed by the address at location 26 of the object file.|
-||length|16-bit|Total length of the following machine code block, 0x0000 for a 64 KByte block. A zero-length block is not stored in the file, i.e. the Machine Code pointer in the header is set to 0xFFFFFFFF.|
-||block|length bytes|Machine code block.|
-
-### Library file format documentation
-
-The library file format is a sequence of object files with additional structures.
-
-|Addr|Object|Type|Description|
-|--- |--- |--- |--- |
-||||**File header**|
-|0|'Z80LMF01'|8 chars|File type identifier|
-||||**Object Modules section**|
-||next object file|32-bit|File pointer to the next object file, 0xFFFFFFFF if the current Object File Block is the last in the library file.|
-||object file length|32-bit|Length of the Object File. If this integer is 0 then it is indicated that the current \<Object File Block\> has been marked "deleted" and will not be used.|
-||object file|length bytes|'Z80RMF01' Object File|
-
-## TODO List
-
-- Parse TASM input
-- Parse Z80MR input
-- high level structures
-- macros
-- architecture-specific macro-like opcodes
-- architecture-specific character encoding
-- JR to JP optimization for speed
-- JP to JR optimization for size
-- section groups
-- absolute memory areas with holes
-- overlays
-- compile expressions
-- object files store list of input files and command line so that -d can decide if it is necessary to recompile
-- object files can store same code for multiple architectures
-- object files and library files have an index of all defined symbols
-- recursive parsing of @lists
-- environment variable to pass options to assembler
-- preprocessor
-- separate scanner from preprocessor  
-- parse expressions  
-- compute compile-time constants  
-- execute compile-time IF/ELSE/ENDIF  
-- do not process preprocessor directives in the false branch of IF  
-  fails building z88dk because INCLUDE of unexistent file guarded by
-  IF FALSE is processed and assembly fails  
-- process C_LINE  
-- fix list files when parsing a .i
-- move all directives from z80asm to z80asm2  
-- handle -m for architecture specific code  
-- handle -D and -U for top-level defines
-- process INCLUDE / INCBIN / BINARY  
-- generate .i file  
-- indicate syntax error location  
-- process labels  
-- process INCLUDE  
-- process BINARY/INCBIN  
-- bug rst label
-- Implement recursive includes in Coco/R parser/scanner
-- Separate standard Z80 assembly from extensions; add macro files for extensions.
-- Port to C++
-- Parse command line
-- Input source
-- Preprocess
-- Lexing
-- Parsing
-- Symbol Table
-- Object Files
-- Assembling 
-- Linking
-- List file
-- allow EQU as synonym to DEFC
-- finish the split between front-end and back-end;
-- implement an expression parser with a parser generator, to get rid of
-  the need to write a '#' to tell the assembler something it should know:
-  a difference between two addresses is a constant;
-- add an additional step to automatically change JR into JP if the
-  distance is too far;
-- implement macros inside the assembler
-- add high level constructs (IF flag / ELSE / ENDIF, 
-  DO WHILE flag, ...)
-- add a rule based optimizer based on RAGEL as a state machine generator
-- --icase option
-- --c-strings or --asm-strings
-- architectire-dependent character mapping
-- Test: jr: jr jr
-- Need option to debug pre-processing and macro expansion - -E
-- Add one opcode
-- Separate standard Z80 assembly from extensions; add macro files for extensions
-- Preprocess
-- Parsing
-- Symbol Table
-- Object Files
-- Assembling
-- Linking
-- List file
-- allow EQU as synonym to DEFC
-- finish the split between front-end and back-end;
-- implement an expression parser with a parser generator, to get rid of the need to write a '#' to tell the assembler something it should know: a difference between two addresses is a constant;
-- add an additional step to automatically change JR into JP if the distance is too far;
-- cleanup the symbol table to implement the GLOBAL suggestion: declare a symbol GLOBAL and it is PUBLIC if defined, or EXTERN otherwise
-- implement macros inside the assembler
-- add high level constructs (IF flag / ELSE / ENDIF, DO WHILE flag, ...)
-- add a rule based optimizer based on RAGEL as a state machine generator
-- BUG_0038: library modules not loaded in sequence: The library modules loaded to the linked binary file should respect the order given on the command line.
-- generate .err files with errors
-- show source line and syntax error location 
-- section name: introduces a new section at the end of the current list
-- section name before name: introduces a new section before the given section
-- section name after name: introduces a new section after the given name
-- org:
-  1. Any section with an ORG address starts a new area of code and generates 
-     a new binary output file, named <first_module_name>_<section_name>.bin
-  2. Any section that has no ORG address gets packed at the end of the previous section.
-- The null section is only special in the sense that the code is output 
-  to <first_module_name>.bin, and that it's ORG address can be defined in 
-  the command line via -rhhhh.
-- simplify expressions to tranform LABEL1-LABEL2 into a constant
-- --icase option
-- --c-strings or --asm-strings
-- architecture-dependent character mapping
-- Test: jr: jr jr
-- Need option to debug pre-processing and macro expansion - -E
-- Add one opcode
-- Separate standard Z80 assembly from extensions; add macro files for extensions
-- Preprocess
-- Parsing
-- Symbol Table
-- Object Files
-- Assembling
-- Linking
-- List file
-- allow EQU as synonym to DEFC
-- finish the split between front-end and back-end;
-- implement an expression parser with a parser generator, to get rid of the need to write a '#' to tell the assembler something it should know: a difference between two addresses is a constant;
-- add an additional step to automatically change JR into JP if the distance is too far;
-- cleanup the symbol table to implement the GLOBAL suggestion: declare a symbol GLOBAL and it is PUBLIC if defined, or EXTERN otherwise
-- implement macros inside the assembler
-- add high level constructs (IF flag / ELSE / ENDIF, DO WHILE flag, ...)
-- add a rule based optimizer based on RAGEL as a state machine generator
-- BUG_0038: library modules not loaded in sequence: The library modules loaded to the linked binary file should respect the order given on the command line.
-- generate .err files with errors
-- show source line and syntax error location 
-- Manage libraries
-- Link object files and libraries
-- Split object files in modules, link each module separately
-- :: to define public symbol
-- ## to declare external symbol
-- #include
-- #define
-- #macro
+- Unsorted Backlog
+    - compute compile-time constants  
+    - execute compile-time IF/ELSE/ENDIF  
+    - do not process preprocessor directives in the false branch of IF  
+    fails building z88dk because INCLUDE of unexistent file guarded by
+    IF FALSE is processed and assembly fails  
+    - process C_LINE  
+    - fix list files when parsing a .i
+    - move all directives from z80asm to z80asm2  
+    - handle -m for architecture specific code  
+    - handle -D and -U for top-level defines
+    - process INCLUDE / INCBIN / BINARY  
+    - generate .i file  
+    - indicate syntax error location  
+    - process labels  
+    - process INCLUDE  
+    - process BINARY/INCBIN  
+    - bug rst label
+    - Implement recursive includes in Coco/R parser/scanner
+    - Separate standard Z80 assembly from extensions; add macro files for extensions.
+    - Port to C++
+    - Parse command line
+    - Input source
+    - Preprocess
+    - Lexing
+    - Parsing
+    - Symbol Table
+    - Object Files
+    - Assembling 
+    - Linking
+    - List file
+    - allow EQU as synonym to DEFC
+    - finish the split between front-end and back-end;
+    - implement an expression parser with a parser generator, to get rid of
+    the need to write a '#' to tell the assembler something it should know:
+    a difference between two addresses is a constant;
+    - add an additional step to automatically change JR into JP if the
+    distance is too far;
+    - implement macros inside the assembler
+    - add high level constructs (IF flag / ELSE / ENDIF, 
+    DO WHILE flag, ...)
+    - add a rule based optimizer based on RAGEL as a state machine generator
+    - --icase option
+    - --c-strings or --asm-strings
+    - architectire-dependent character mapping
+    - Test: jr: jr jr
+    - Need option to debug pre-processing and macro expansion - -E
+    - Add one opcode
+    - Separate standard Z80 assembly from extensions; add macro files for extensions
+    - Preprocess
+    - Parsing
+    - Symbol Table
+    - Object Files
+    - Assembling
+    - Linking
+    - List file
+    - allow EQU as synonym to DEFC
+    - finish the split between front-end and back-end;
+    - implement an expression parser with a parser generator, to get rid of the need to write a '#' to tell the assembler something it should know: a difference between two addresses is a constant;
+    - add an additional step to automatically change JR into JP if the distance is too far;
+    - cleanup the symbol table to implement the GLOBAL suggestion: declare a symbol GLOBAL and it is PUBLIC if defined, or EXTERN otherwise
+    - implement macros inside the assembler
+    - add high level constructs (IF flag / ELSE / ENDIF, DO WHILE flag, ...)
+    - add a rule based optimizer based on RAGEL as a state machine generator
+    - BUG_0038: library modules not loaded in sequence: The library modules loaded to the linked binary file should respect the order given on the command line.
+    - generate .err files with errors
+    - show source line and syntax error location 
+    - section name: introduces a new section at the end of the current list
+    - section name before name: introduces a new section before the given section
+    - section name after name: introduces a new section after the given name
+    - org:
+    1. Any section with an ORG address starts a new area of code and generates 
+        a new binary output file, named <first_module_name>_<section_name>.bin
+    2. Any section that has no ORG address gets packed at the end of the previous section.
+    - The null section is only special in the sense that the code is output 
+    to <first_module_name>.bin, and that it's ORG address can be defined in 
+    the command line via -rhhhh.
+    - simplify expressions to tranform LABEL1-LABEL2 into a constant
+    - --icase option
+    - --c-strings or --asm-strings
+    - architecture-dependent character mapping
+    - Test: jr: jr jr
+    - Need option to debug pre-processing and macro expansion - -E
+    - Add one opcode
+    - Separate standard Z80 assembly from extensions; add macro files for extensions
+    - Preprocess
+    - Parsing
+    - Symbol Table
+    - Object Files
+    - Assembling
+    - Linking
+    - List file
+    - allow EQU as synonym to DEFC
+    - finish the split between front-end and back-end;
+    - implement an expression parser with a parser generator, to get rid of the need to write a '#' to tell the assembler something it should know: a difference between two addresses is a constant;
+    - add an additional step to automatically change JR into JP if the distance is too far;
+    - cleanup the symbol table to implement the GLOBAL suggestion: declare a symbol GLOBAL and it is PUBLIC if defined, or EXTERN otherwise
+    - implement macros inside the assembler
+    - add high level constructs (IF flag / ELSE / ENDIF, DO WHILE flag, ...)
+    - add a rule based optimizer based on RAGEL as a state machine generator
+    - BUG_0038: library modules not loaded in sequence: The library modules loaded to the linked binary file should respect the order given on the command line.
+    - generate .err files with errors
+    - show source line and syntax error location 
+    - Manage libraries
+    - Link object files and libraries
+    - Split object files in modules, link each module separately
+    - :: to define public symbol
+    - ## to declare external symbol
+    - #include
+    - #define
+    - #macro
 
 
+## References
+
+- [The Telemark Assembler](http://www.cpcalive.com/docs/TASMMAN.HTM)
 
 ## Copyright
 
