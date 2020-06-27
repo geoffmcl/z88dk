@@ -16,39 +16,39 @@ void test_continuation_line(void) {
     STR_IS(yyfilename, "test.asm");
     IS(yylineno, 1);
 
-    IS(yylex(), LABEL);
+    IS(yylex_2(), LABEL);
     STR_IS(yylval.LABEL, "lbl1");
-    IS(yylex(), LD);
-    IS(yylex(), B);
-    IS(yylex(), ',');
-    IS(yylex(), INTEGER);
+    IS(yylex_2(), LD);
+    IS(yylex_2(), B);
+    IS(yylex_2(), ',');
+    IS(yylex_2(), INTEGER);
     IS(yylval.INTEGER, 23);
     IS(yylval.IDENT.atbol, false);
 
-    IS(yylex(), '\n');
+    IS(yylex_2(), '\n');
 
     STR_IS(yyfilename, "test.asm");
     IS(yylineno, 1);
 
-    IS(yylex(), DJNZ);
+    IS(yylex_2(), DJNZ);
 
-    IS(yylex(), IDENT);
+    IS(yylex_2(), IDENT);
     STR_IS(yylval.IDENT.name, "lbl1");
     IS(yylval.IDENT.id, 0);
     IS(yylval.IDENT.atbol, false);
 
-    IS(yylex(), '\n');
+    IS(yylex_2(), '\n');
 
     STR_IS(yyfilename, "test.asm");
     IS(yylineno, 1);
 
-    IS(yylex(), LABEL);
+    IS(yylex_2(), LABEL);
     STR_IS(yylval.LABEL, "lbl2");
 
-    IS(yylex(), RET);
-    IS(yylex(), '\n');
-    IS(yylex(), 0);
-    IS(yylex(), 0);
+    IS(yylex_2(), RET);
+    IS(yylex_2(), '\n');
+    IS(yylex_2(), 0);
+    IS(yylex_2(), 0);
 
     pop_input_file();
     OK(0 == remove("test.asm"));
@@ -57,8 +57,8 @@ void test_continuation_line(void) {
 void test_empty(void) {
     SPEW_T("test.asm", "");
     push_input_file("test.asm");
-    IS(yylex(), 0);
-    IS(yylex(), 0);
+    IS(yylex_2(), 0);
+    IS(yylex_2(), 0);
     pop_input_file();
     OK(0 == remove("test.asm"));
 }
@@ -66,37 +66,37 @@ void test_empty(void) {
 void test_end_newline(void) {
     SPEW_T("test.asm", ".");
     push_input_file("test.asm");
-    IS(yylex(), '.');
-    IS(yylex(), '\n');
-    IS(yylex(), 0);
-    IS(yylex(), 0);
+    IS(yylex_2(), '.');
+    IS(yylex_2(), '\n');
+    IS(yylex_2(), 0);
+    IS(yylex_2(), 0);
     pop_input_file();
     OK(0 == remove("test.asm"));
 
     SPEW_T("test.asm", ".\n");
     push_input_file("test.asm");
-    IS(yylex(), '.');
-    IS(yylex(), '\n');
-    IS(yylex(), 0);
-    IS(yylex(), 0);
+    IS(yylex_2(), '.');
+    IS(yylex_2(), '\n');
+    IS(yylex_2(), 0);
+    IS(yylex_2(), 0);
     pop_input_file();
     OK(0 == remove("test.asm"));
 
     SPEW_T("test.asm", ".\r");
     push_input_file("test.asm");
-    IS(yylex(), '.');
-    IS(yylex(), '\n');
-    IS(yylex(), 0);
-    IS(yylex(), 0);
+    IS(yylex_2(), '.');
+    IS(yylex_2(), '\n');
+    IS(yylex_2(), 0);
+    IS(yylex_2(), 0);
     pop_input_file();
     OK(0 == remove("test.asm"));
 
     SPEW_T("test.asm", ".\r\n");
     push_input_file("test.asm");
-    IS(yylex(), '.');
-    IS(yylex(), '\n');
-    IS(yylex(), 0);
-    IS(yylex(), 0);
+    IS(yylex_2(), '.');
+    IS(yylex_2(), '\n');
+    IS(yylex_2(), 0);
+    IS(yylex_2(), 0);
     pop_input_file();
     OK(0 == remove("test.asm"));
 }
@@ -111,16 +111,16 @@ void test_comments(void) {
            "cmt 3*/%"			// line 6
           );
     push_input_file("test.asm");
-    IS(yylex(), '!'); IS(yylineno, 1);
-    IS(yylex(), '\n'); IS(yylineno, 2);
-    IS(yylex(), '\n'); IS(yylineno, 3);
-    IS(yylex(), '@'); IS(yylineno, 3);
-    IS(yylex(), '\n'); IS(yylineno, 4);
-    IS(yylex(), '$'); IS(yylineno, 4);
-    IS(yylex(), '%'); IS(yylineno, 6);
-    IS(yylex(), '\n'); IS(yylineno, 7);
-    IS(yylex(), 0);
-    IS(yylex(), 0);
+    IS(yylex_2(), '!'); IS(yylineno, 1);
+    IS(yylex_2(), '\n'); IS(yylineno, 2);
+    IS(yylex_2(), '\n'); IS(yylineno, 3);
+    IS(yylex_2(), '@'); IS(yylineno, 3);
+    IS(yylex_2(), '\n'); IS(yylineno, 4);
+    IS(yylex_2(), '$'); IS(yylineno, 4);
+    IS(yylex_2(), '%'); IS(yylineno, 6);
+    IS(yylex_2(), '\n'); IS(yylineno, 7);
+    IS(yylex_2(), 0);
+    IS(yylex_2(), 0);
     pop_input_file();
     OK(0 == remove("test.asm"));
 
@@ -141,29 +141,29 @@ void test_label(void) {
 
     opt_dotdirective = false;
     push_input_file("test.asm");
-    IS(yylex(), LABEL);
+    IS(yylex_2(), LABEL);
     STR_IS(yylval.LABEL, "defb");
-    IS(yylex(), INTEGER);
+    IS(yylex_2(), INTEGER);
     IS(yylval.INTEGER, 3);
-    IS(yylex(), '\n');
-    IS(yylex(), LABEL);
+    IS(yylex_2(), '\n');
+    IS(yylex_2(), LABEL);
     STR_IS(yylval.LABEL, "label");
-    IS(yylex(), '\n');
-    IS(yylex(), 0);
-    IS(yylex(), 0);
+    IS(yylex_2(), '\n');
+    IS(yylex_2(), 0);
+    IS(yylex_2(), 0);
     pop_input_file();
 
     opt_dotdirective = true;
     push_input_file("test.asm");
-    IS(yylex(), BYTE);
-    IS(yylex(), INTEGER);
+    IS(yylex_2(), BYTE);
+    IS(yylex_2(), INTEGER);
     IS(yylval.INTEGER, 3);
-    IS(yylex(), '\n');
-    IS(yylex(), LABEL);
+    IS(yylex_2(), '\n');
+    IS(yylex_2(), LABEL);
     STR_IS(yylval.LABEL, "label");
-    IS(yylex(), '\n');
-    IS(yylex(), 0);
-    IS(yylex(), 0);
+    IS(yylex_2(), '\n');
+    IS(yylex_2(), 0);
+    IS(yylex_2(), 0);
     pop_input_file();
 
     opt_dotdirective = false;
@@ -173,31 +173,31 @@ void test_label(void) {
 
     opt_labelcol1 = false;
     push_input_file("test.asm");
-    IS(yylex(), BYTE);
-    IS(yylex(), INTEGER);
+    IS(yylex_2(), BYTE);
+    IS(yylex_2(), INTEGER);
     IS(yylval.INTEGER, 3);
-    IS(yylex(), '\n');
-    IS(yylex(), BYTE);
-    IS(yylex(), INTEGER);
+    IS(yylex_2(), '\n');
+    IS(yylex_2(), BYTE);
+    IS(yylex_2(), INTEGER);
     IS(yylval.INTEGER, 3);
-    IS(yylex(), '\n');
-    IS(yylex(), 0);
-    IS(yylex(), 0);
+    IS(yylex_2(), '\n');
+    IS(yylex_2(), 0);
+    IS(yylex_2(), 0);
     pop_input_file();
 
     opt_labelcol1 = true;
     push_input_file("test.asm");
-    IS(yylex(), LABEL);
+    IS(yylex_2(), LABEL);
     STR_IS(yylval.LABEL, "defb");
-    IS(yylex(), INTEGER);
+    IS(yylex_2(), INTEGER);
     IS(yylval.INTEGER, 3);
-    IS(yylex(), '\n');
-    IS(yylex(), BYTE);
-    IS(yylex(), INTEGER);
+    IS(yylex_2(), '\n');
+    IS(yylex_2(), BYTE);
+    IS(yylex_2(), INTEGER);
     IS(yylval.INTEGER, 3);
-    IS(yylex(), '\n');
-    IS(yylex(), 0);
-    IS(yylex(), 0);
+    IS(yylex_2(), '\n');
+    IS(yylex_2(), 0);
+    IS(yylex_2(), 0);
     pop_input_file();
 
     opt_labelcol1 = false;
@@ -206,35 +206,35 @@ void test_label(void) {
     SPEW_T("test.asm", " defb : defb\\ . defb defb \\ . defb : defb ");
 
     push_input_file("test.asm");
-    IS(yylex(), LABEL);
+    IS(yylex_2(), LABEL);
     STR_IS(yylval.LABEL, "defb");
-    IS(yylex(), BYTE);
-    IS(yylex(), '\n');
-    IS(yylex(), LABEL);
+    IS(yylex_2(), BYTE);
+    IS(yylex_2(), '\n');
+    IS(yylex_2(), LABEL);
     STR_IS(yylval.LABEL, "defb");
-    IS(yylex(), BYTE);
-    IS(yylex(), '\n');
-    IS(yylex(), LABEL);
+    IS(yylex_2(), BYTE);
+    IS(yylex_2(), '\n');
+    IS(yylex_2(), LABEL);
     STR_IS(yylval.LABEL, "defb");
-    IS(yylex(), ':');
-    IS(yylex(), BYTE);
-    IS(yylex(), '\n');
-    IS(yylex(), 0);
-    IS(yylex(), 0);
+    IS(yylex_2(), ':');
+    IS(yylex_2(), BYTE);
+    IS(yylex_2(), '\n');
+    IS(yylex_2(), 0);
+    IS(yylex_2(), 0);
     pop_input_file();
 
     OK(0 == remove("test.asm"));
 
     SPEW_T("test.asm", " . 123 defb ");
     push_input_file("test.asm");
-    IS(yylex(), '.');
-    IS(yylex(), INTEGER);
+    IS(yylex_2(), '.');
+    IS(yylex_2(), INTEGER);
     IS(yylval.INTEGER, 123);
-    IS(yylex(), IDENT);
+    IS(yylex_2(), IDENT);
     STR_IS(yylval.IDENT.name, "defb");
-    IS(yylex(), '\n');
-    IS(yylex(), 0);
-    IS(yylex(), 0);
+    IS(yylex_2(), '\n');
+    IS(yylex_2(), 0);
+    IS(yylex_2(), 0);
     pop_input_file();
 
     OK(0 == remove("test.asm"));
@@ -245,26 +245,26 @@ void test_ucase(void) {
 
     opt_ucase = false;
     push_input_file("test.asm");
-    IS(yylex(), LABEL);
+    IS(yylex_2(), LABEL);
     STR_IS(yylval.LABEL, "Lbl1");
-    IS(yylex(), BYTE);
-    IS(yylex(), IDENT);
+    IS(yylex_2(), BYTE);
+    IS(yylex_2(), IDENT);
     STR_IS(yylval.IDENT.name, "Abc");
-    IS(yylex(), '\n');
-    IS(yylex(), 0);
-    IS(yylex(), 0);
+    IS(yylex_2(), '\n');
+    IS(yylex_2(), 0);
+    IS(yylex_2(), 0);
     pop_input_file();
 
     opt_ucase = true;
     push_input_file("test.asm");
-    IS(yylex(), LABEL);
+    IS(yylex_2(), LABEL);
     STR_IS(yylval.LABEL, "LBL1");
-    IS(yylex(), BYTE);
-    IS(yylex(), IDENT);
+    IS(yylex_2(), BYTE);
+    IS(yylex_2(), IDENT);
     STR_IS(yylval.IDENT.name, "ABC");
-    IS(yylex(), '\n');
-    IS(yylex(), 0);
-    IS(yylex(), 0);
+    IS(yylex_2(), '\n');
+    IS(yylex_2(), 0);
+    IS(yylex_2(), 0);
     pop_input_file();
 
     opt_ucase = false;
@@ -275,16 +275,16 @@ void test_just_opcode(void) {
     SPEW_T("test.asm", "ret\n ret\\ret\\ ret");
 
     push_input_file("test.asm");
-    IS(yylex(), RET);
-    IS(yylex(), '\n');
-    IS(yylex(), RET);
-    IS(yylex(), '\n');
-    IS(yylex(), RET);
-    IS(yylex(), '\n');
-    IS(yylex(), RET);
-    IS(yylex(), '\n');
-    IS(yylex(), 0);
-    IS(yylex(), 0);
+    IS(yylex_2(), RET);
+    IS(yylex_2(), '\n');
+    IS(yylex_2(), RET);
+    IS(yylex_2(), '\n');
+    IS(yylex_2(), RET);
+    IS(yylex_2(), '\n');
+    IS(yylex_2(), RET);
+    IS(yylex_2(), '\n');
+    IS(yylex_2(), 0);
+    IS(yylex_2(), 0);
     pop_input_file();
 
     OK(0 == remove("test.asm"));
@@ -294,16 +294,16 @@ void test_label_and_opcode(void) {
     SPEW_T("test.asm", "ret ret\\ret ret");
 
     push_input_file("test.asm");
-    IS(yylex(), LABEL);
+    IS(yylex_2(), LABEL);
     STR_IS(yylval.LABEL, "ret");
-    IS(yylex(), RET);
-    IS(yylex(), '\n');
-    IS(yylex(), LABEL);
+    IS(yylex_2(), RET);
+    IS(yylex_2(), '\n');
+    IS(yylex_2(), LABEL);
     STR_IS(yylval.LABEL, "ret");
-    IS(yylex(), RET);
-    IS(yylex(), '\n');
-    IS(yylex(), 0);
-    IS(yylex(), 0);
+    IS(yylex_2(), RET);
+    IS(yylex_2(), '\n');
+    IS(yylex_2(), 0);
+    IS(yylex_2(), 0);
     pop_input_file();
 
     OK(0 == remove("test.asm"));
@@ -313,16 +313,16 @@ void test_opcode_and_operand(void) {
     SPEW_T("test.asm", "ret rx\\ret ry");
 
     push_input_file("test.asm");
-    IS(yylex(), RET);
-    IS(yylex(), IDENT);
+    IS(yylex_2(), RET);
+    IS(yylex_2(), IDENT);
     STR_IS(yylval.IDENT.name, "rx");
-    IS(yylex(), '\n');
-    IS(yylex(), RET);
-    IS(yylex(), IDENT);
+    IS(yylex_2(), '\n');
+    IS(yylex_2(), RET);
+    IS(yylex_2(), IDENT);
     STR_IS(yylval.IDENT.name, "ry");
-    IS(yylex(), '\n');
-    IS(yylex(), 0);
-    IS(yylex(), 0);
+    IS(yylex_2(), '\n');
+    IS(yylex_2(), 0);
+    IS(yylex_2(), 0);
     pop_input_file();
 
     OK(0 == remove("test.asm"));
@@ -340,43 +340,43 @@ void test_all_fields(void) {
            "label /*\n\n*/ ret /*\n\n*/z");
 
     push_input_file("test.asm");
-    IS(yylex(), LABEL);
+    IS(yylex_2(), LABEL);
     STR_IS(yylval.LABEL, "label");
-    IS(yylex(), '\n');
-    IS(yylex(), LABEL);
+    IS(yylex_2(), '\n');
+    IS(yylex_2(), LABEL);
     STR_IS(yylval.LABEL, "label");
-    IS(yylex(), '\n');
-    IS(yylex(), LABEL);
+    IS(yylex_2(), '\n');
+    IS(yylex_2(), LABEL);
     STR_IS(yylval.LABEL, "label");
-    IS(yylex(), ':');
-    IS(yylex(), '\n');
-    IS(yylex(), LABEL);
+    IS(yylex_2(), ':');
+    IS(yylex_2(), '\n');
+    IS(yylex_2(), LABEL);
     STR_IS(yylval.LABEL, "label");
-    IS(yylex(), RET);
-    IS(yylex(), Z);
-    IS(yylex(), '\n');
-    IS(yylex(), LABEL);
+    IS(yylex_2(), RET);
+    IS(yylex_2(), Z);
+    IS(yylex_2(), '\n');
+    IS(yylex_2(), LABEL);
     STR_IS(yylval.LABEL, "label");
-    IS(yylex(), RET);
-    IS(yylex(), Z);
-    IS(yylex(), '\n');
-    IS(yylex(), LABEL);
+    IS(yylex_2(), RET);
+    IS(yylex_2(), Z);
+    IS(yylex_2(), '\n');
+    IS(yylex_2(), LABEL);
     STR_IS(yylval.LABEL, "label");
-    IS(yylex(), RET);
-    IS(yylex(), Z);
-    IS(yylex(), '\n');
-    IS(yylex(), LABEL);
+    IS(yylex_2(), RET);
+    IS(yylex_2(), Z);
+    IS(yylex_2(), '\n');
+    IS(yylex_2(), LABEL);
     STR_IS(yylval.LABEL, "label");
-    IS(yylex(), RET);
-    IS(yylex(), Z);
-    IS(yylex(), '\n');
-    IS(yylex(), LABEL);
+    IS(yylex_2(), RET);
+    IS(yylex_2(), Z);
+    IS(yylex_2(), '\n');
+    IS(yylex_2(), LABEL);
     STR_IS(yylval.LABEL, "label");
-    IS(yylex(), RET);
-    IS(yylex(), Z);
-    IS(yylex(), '\n');
-    IS(yylex(), 0);
-    IS(yylex(), 0);
+    IS(yylex_2(), RET);
+    IS(yylex_2(), Z);
+    IS(yylex_2(), '\n');
+    IS(yylex_2(), 0);
+    IS(yylex_2(), 0);
     pop_input_file();
 
     OK(0 == remove("test.asm"));
@@ -385,34 +385,34 @@ void test_all_fields(void) {
 void test_ident(void) {
     SPEW_T("test.asm", "ex af,af'");
     push_input_file("test.asm");
-    IS(yylex(), EX);
-    IS(yylex(), AF);
-    IS(yylex(), ',');
-    IS(yylex(), AF_);
-    IS(yylex(), '\n');
-    IS(yylex(), 0);
-    IS(yylex(), 0);
+    IS(yylex_2(), EX);
+    IS(yylex_2(), AF);
+    IS(yylex_2(), ',');
+    IS(yylex_2(), AF_);
+    IS(yylex_2(), '\n');
+    IS(yylex_2(), 0);
+    IS(yylex_2(), 0);
     pop_input_file();
     OK(0 == remove("test.asm"));
 
     SPEW_T("test.asm", "Abc123.zxy_pt ret\n_Abc123.zxy_pt ret");
     push_input_file("test.asm");
-    IS(yylex(), LABEL);
+    IS(yylex_2(), LABEL);
     STR_IS(yylval.LABEL, "Abc123.zxy_pt");
-    IS(yylex(), RET);
-    IS(yylex(), '\n');
-    IS(yylex(), LABEL);
+    IS(yylex_2(), RET);
+    IS(yylex_2(), '\n');
+    IS(yylex_2(), LABEL);
     STR_IS(yylval.LABEL, "_Abc123.zxy_pt");
-    IS(yylex(), RET);
-    IS(yylex(), '\n');
-    IS(yylex(), 0);
-    IS(yylex(), 0);
+    IS(yylex_2(), RET);
+    IS(yylex_2(), '\n');
+    IS(yylex_2(), 0);
+    IS(yylex_2(), 0);
     pop_input_file();
     OK(0 == remove("test.asm"));
 }
 
 void test_numbers(void) {
-#define T(x)	IS(yylex(), INTEGER); IS(yylval.INTEGER, (x)); IS(yylex(), ',');
+#define T(x)	IS(yylex_2(), INTEGER); IS(yylval.INTEGER, (x)); IS(yylex_2(), ',');
 
     SPEW_T("test.asm",
            "defb	0, 1, 2, 3, 9, 10, 20, 30,							; decimal without suffix\n"
@@ -438,45 +438,45 @@ void test_numbers(void) {
            "defb	0b111, 0b111h,	; 7, 45329 \n"
           );
     push_input_file("test.asm");
-    IS(yylex(), BYTE); T(0); T(1); T(2); T(3); T(9); T(10); T(20); T(30);
-    IS(yylex(), '\n');
-    IS(yylex(), BYTE); T(0); T(1); T(2); T(3); T(9); T(10); T(20); T(30);
-    IS(yylex(), '\n');
+    IS(yylex_2(), BYTE); T(0); T(1); T(2); T(3); T(9); T(10); T(20); T(30);
+    IS(yylex_2(), '\n');
+    IS(yylex_2(), BYTE); T(0); T(1); T(2); T(3); T(9); T(10); T(20); T(30);
+    IS(yylex_2(), '\n');
 
-    IS(yylex(), BYTE); T(0); T(1); T(2); T(3); T(4); T(5); T(6); T(7);
-    IS(yylex(), '\n');
-    IS(yylex(), BYTE); T(0); T(1); T(2); T(3); T(4); T(5); T(6); T(7);
-    IS(yylex(), '\n');
-    IS(yylex(), BYTE); T(0); T(1); T(2); T(3); T(4); T(5); T(6); T(7);
-    IS(yylex(), '\n');
-    IS(yylex(), BYTE); T(0); T(1); T(2); T(3); T(4); T(5); T(6); T(7);
-    IS(yylex(), '\n');
+    IS(yylex_2(), BYTE); T(0); T(1); T(2); T(3); T(4); T(5); T(6); T(7);
+    IS(yylex_2(), '\n');
+    IS(yylex_2(), BYTE); T(0); T(1); T(2); T(3); T(4); T(5); T(6); T(7);
+    IS(yylex_2(), '\n');
+    IS(yylex_2(), BYTE); T(0); T(1); T(2); T(3); T(4); T(5); T(6); T(7);
+    IS(yylex_2(), '\n');
+    IS(yylex_2(), BYTE); T(0); T(1); T(2); T(3); T(4); T(5); T(6); T(7);
+    IS(yylex_2(), '\n');
 
-    IS(yylex(), BYTE); T(0); T(1); T(2); T(3); T(4); T(5); T(6); T(7);
-    IS(yylex(), '\n');
-    IS(yylex(), BYTE); T(0); T(1); T(2); T(3); T(4); T(5); T(6); T(7);
-    IS(yylex(), '\n');
+    IS(yylex_2(), BYTE); T(0); T(1); T(2); T(3); T(4); T(5); T(6); T(7);
+    IS(yylex_2(), '\n');
+    IS(yylex_2(), BYTE); T(0); T(1); T(2); T(3); T(4); T(5); T(6); T(7);
+    IS(yylex_2(), '\n');
 
-    IS(yylex(), BYTE); T(0); T(1); T(2); T(3); T(7); T(8); T(16); T(24);
-    IS(yylex(), '\n');
-    IS(yylex(), BYTE); T(0); T(1); T(2); T(3); T(7); T(8); T(16); T(24);
-    IS(yylex(), '\n');
-    IS(yylex(), BYTE); T(0); T(1); T(2); T(3); T(7); T(8); T(16); T(24);
-    IS(yylex(), '\n');
-    IS(yylex(), BYTE); T(0); T(1); T(2); T(3); T(7); T(8); T(16); T(24);
-    IS(yylex(), '\n');
+    IS(yylex_2(), BYTE); T(0); T(1); T(2); T(3); T(7); T(8); T(16); T(24);
+    IS(yylex_2(), '\n');
+    IS(yylex_2(), BYTE); T(0); T(1); T(2); T(3); T(7); T(8); T(16); T(24);
+    IS(yylex_2(), '\n');
+    IS(yylex_2(), BYTE); T(0); T(1); T(2); T(3); T(7); T(8); T(16); T(24);
+    IS(yylex_2(), '\n');
+    IS(yylex_2(), BYTE); T(0); T(1); T(2); T(3); T(7); T(8); T(16); T(24);
+    IS(yylex_2(), '\n');
 
-    IS(yylex(), BYTE); T(0); T(1); T(2); T(3); T(9); T(10); T(11); T(12);
-    T(13); T(14); T(15); T(16); T(32); T(48); IS(yylex(), '\n');
-    IS(yylex(), BYTE); T(0); T(1); T(2); T(3); T(9); T(10); T(11); T(12);
-    T(13); T(14); T(15); T(16); T(32); T(48); IS(yylex(), '\n');
-    IS(yylex(), BYTE); T(0); T(1); T(2); T(3); T(9); T(10); T(11); T(12);
-    T(13); T(14); T(15); T(16); T(32); T(48); IS(yylex(), '\n');
+    IS(yylex_2(), BYTE); T(0); T(1); T(2); T(3); T(9); T(10); T(11); T(12);
+    T(13); T(14); T(15); T(16); T(32); T(48); IS(yylex_2(), '\n');
+    IS(yylex_2(), BYTE); T(0); T(1); T(2); T(3); T(9); T(10); T(11); T(12);
+    T(13); T(14); T(15); T(16); T(32); T(48); IS(yylex_2(), '\n');
+    IS(yylex_2(), BYTE); T(0); T(1); T(2); T(3); T(9); T(10); T(11); T(12);
+    T(13); T(14); T(15); T(16); T(32); T(48); IS(yylex_2(), '\n');
 
-    IS(yylex(), BYTE); T(7); T(45329); IS(yylex(), '\n');
+    IS(yylex_2(), BYTE); T(7); T(45329); IS(yylex_2(), '\n');
 
-    IS(yylex(), 0);
-    IS(yylex(), 0);
+    IS(yylex_2(), 0);
+    IS(yylex_2(), 0);
     pop_input_file();
     OK(0 == remove("test.asm"));
 
@@ -486,12 +486,12 @@ void test_numbers(void) {
            "defb	@0,  @1,  @2,  @3,  @7,  @10,  @20,  @30,	; octal with prefix\n"
           );
     push_input_file("test.asm");
-    IS(yylex(), BYTE); T(0); T(1); T(2); T(3); T(7); T(8); T(16); T(24);
-    IS(yylex(), '\n');
-    IS(yylex(), BYTE); T(0); T(1); T(2); T(3); T(7); T(8); T(16); T(24);
-    IS(yylex(), '\n');
-    IS(yylex(), 0);
-    IS(yylex(), 0);
+    IS(yylex_2(), BYTE); T(0); T(1); T(2); T(3); T(7); T(8); T(16); T(24);
+    IS(yylex_2(), '\n');
+    IS(yylex_2(), BYTE); T(0); T(1); T(2); T(3); T(7); T(8); T(16); T(24);
+    IS(yylex_2(), '\n');
+    IS(yylex_2(), 0);
+    IS(yylex_2(), 0);
     pop_input_file();
     OK(0 == remove("test.asm"));
     opt_atoctal = false;
@@ -502,12 +502,12 @@ void test_numbers(void) {
            "defb	#0, #1, #2, #3, #9, #a, #b, #c, #d, #E, #F, #10, #20, #30,		; hex with prefix\n"
           );
     push_input_file("test.asm");
-    IS(yylex(), BYTE); T(0); T(1); T(2); T(3); T(9); T(10); T(11); T(12);
-    T(13); T(14); T(15); T(16); T(32); T(48); IS(yylex(), '\n');
-    IS(yylex(), BYTE); T(0); T(1); T(2); T(3); T(9); T(10); T(11); T(12);
-    T(13); T(14); T(15); T(16); T(32); T(48); IS(yylex(), '\n');
-    IS(yylex(), 0);
-    IS(yylex(), 0);
+    IS(yylex_2(), BYTE); T(0); T(1); T(2); T(3); T(9); T(10); T(11); T(12);
+    T(13); T(14); T(15); T(16); T(32); T(48); IS(yylex_2(), '\n');
+    IS(yylex_2(), BYTE); T(0); T(1); T(2); T(3); T(9); T(10); T(11); T(12);
+    T(13); T(14); T(15); T(16); T(32); T(48); IS(yylex_2(), '\n');
+    IS(yylex_2(), 0);
+    IS(yylex_2(), 0);
     pop_input_file();
     OK(0 == remove("test.asm"));
     opt_hashhex = false;
@@ -515,25 +515,25 @@ void test_numbers(void) {
     opt_hashhex = true;
     SPEW_T("test.asm", "defb	%2, @2, #define, $define, #def, $def");
     push_input_file("test.asm");
-    IS(yylex(), BYTE);
-    IS(yylex(), '%');
-    IS(yylex(), INTEGER); IS(yylval.INTEGER, 2);
-    IS(yylex(), ',');
-    IS(yylex(), '@');
-    IS(yylex(), INTEGER); IS(yylval.INTEGER, 2);
-    IS(yylex(), ',');
-    IS(yylex(), '#');
-    IS(yylex(), IDENT); STR_IS(yylval.IDENT.name, "define");
-    IS(yylex(), ',');
-    IS(yylex(), '$');
-    IS(yylex(), IDENT); STR_IS(yylval.IDENT.name, "define");
-    IS(yylex(), ',');
-    IS(yylex(), INTEGER); IS(yylval.INTEGER, 0xdef);
-    IS(yylex(), ',');
-    IS(yylex(), INTEGER); IS(yylval.INTEGER, 0xdef);
-    IS(yylex(), '\n');
-    IS(yylex(), 0);
-    IS(yylex(), 0);
+    IS(yylex_2(), BYTE);
+    IS(yylex_2(), '%');
+    IS(yylex_2(), INTEGER); IS(yylval.INTEGER, 2);
+    IS(yylex_2(), ',');
+    IS(yylex_2(), '@');
+    IS(yylex_2(), INTEGER); IS(yylval.INTEGER, 2);
+    IS(yylex_2(), ',');
+    IS(yylex_2(), '#');
+    IS(yylex_2(), IDENT); STR_IS(yylval.IDENT.name, "define");
+    IS(yylex_2(), ',');
+    IS(yylex_2(), '$');
+    IS(yylex_2(), IDENT); STR_IS(yylval.IDENT.name, "define");
+    IS(yylex_2(), ',');
+    IS(yylex_2(), INTEGER); IS(yylval.INTEGER, 0xdef);
+    IS(yylex_2(), ',');
+    IS(yylex_2(), INTEGER); IS(yylval.INTEGER, 0xdef);
+    IS(yylex_2(), '\n');
+    IS(yylex_2(), 0);
+    IS(yylex_2(), 0);
     pop_input_file();
     OK(0 == remove("test.asm"));
     opt_hashhex = false;
@@ -630,62 +630,62 @@ void test_strings(void) {
            SQ BS "xf" SQ "," SQ BS "X10" SQ "," SQ BS "xff" SQ NL
           );
     push_input_file("test.asm");
-    IS(yylex(), BYTE);
-    IS(yylex(), STRING); STR_IS(yylval.STRING, "0123");
-    IS(yylex(), '\n');
-    IS(yylex(), BYTE);
-    IS(yylex(), STRING); STR_IS(yylval.STRING, "\a\b\x1b\f\n\r\t\v\\'\"?");
-    IS(yylex(), '\n');
-    IS(yylex(), BYTE);
-    IS(yylex(), INTEGER); IS(yylval.INTEGER, 7); IS(yylex(), ',');
-    IS(yylex(), INTEGER); IS(yylval.INTEGER, 8); IS(yylex(), ',');
-    IS(yylex(), INTEGER); IS(yylval.INTEGER, 27); IS(yylex(), ',');
-    IS(yylex(), INTEGER); IS(yylval.INTEGER, 12); IS(yylex(), ',');
-    IS(yylex(), INTEGER); IS(yylval.INTEGER, 10); IS(yylex(), ',');
-    IS(yylex(), INTEGER); IS(yylval.INTEGER, 13); IS(yylex(), ',');
-    IS(yylex(), INTEGER); IS(yylval.INTEGER, 9); IS(yylex(), ',');
-    IS(yylex(), INTEGER); IS(yylval.INTEGER, 11); IS(yylex(), ',');
-    IS(yylex(), INTEGER); IS(yylval.INTEGER, 0x5c); IS(yylex(), ',');
-    IS(yylex(), INTEGER); IS(yylval.INTEGER, 0x27); IS(yylex(), ',');
-    IS(yylex(), INTEGER); IS(yylval.INTEGER, 0x22); IS(yylex(), ',');
-    IS(yylex(), INTEGER); IS(yylval.INTEGER, 0x3f);
-    IS(yylex(), '\n');
-    IS(yylex(), BYTE);
-    IS(yylex(), STRING); STR_IS(yylval.STRING,
-                                "\1" "\2" "\3" "\7" "\17" "\27" "\37" "\77" "\177" "\277" "\377" "\377" "1");
-    IS(yylex(), '\n');
-    IS(yylex(), BYTE);
-    IS(yylex(), INTEGER); IS(yylval.INTEGER, 1); IS(yylex(), ',');
-    IS(yylex(), INTEGER); IS(yylval.INTEGER, 2); IS(yylex(), ',');
-    IS(yylex(), INTEGER); IS(yylval.INTEGER, 3); IS(yylex(), ',');
-    IS(yylex(), INTEGER); IS(yylval.INTEGER, 7); IS(yylex(), ',');
-    IS(yylex(), INTEGER); IS(yylval.INTEGER, 15); IS(yylex(), ',');
-    IS(yylex(), INTEGER); IS(yylval.INTEGER, 23); IS(yylex(), ',');
-    IS(yylex(), INTEGER); IS(yylval.INTEGER, 31); IS(yylex(), ',');
-    IS(yylex(), INTEGER); IS(yylval.INTEGER, 63); IS(yylex(), ',');
-    IS(yylex(), INTEGER); IS(yylval.INTEGER, 127); IS(yylex(), ',');
-    IS(yylex(), INTEGER); IS(yylval.INTEGER, 191); IS(yylex(), ',');
-    IS(yylex(), INTEGER); IS(yylval.INTEGER, 255);
-    IS(yylex(), '\n');
-    IS(yylex(), BYTE);
-    IS(yylex(), STRING); STR_IS(yylval.STRING,
-                                "\x1" "\x2" "\x9" "\xa" "\xb" "\xc" "\xd" "\xe" "\xf" "\x10" "\xff");
-    IS(yylex(), '\n');
-    IS(yylex(), BYTE);
-    IS(yylex(), INTEGER); IS(yylval.INTEGER, 1); IS(yylex(), ',');
-    IS(yylex(), INTEGER); IS(yylval.INTEGER, 2); IS(yylex(), ',');
-    IS(yylex(), INTEGER); IS(yylval.INTEGER, 9); IS(yylex(), ',');
-    IS(yylex(), INTEGER); IS(yylval.INTEGER, 10); IS(yylex(), ',');
-    IS(yylex(), INTEGER); IS(yylval.INTEGER, 11); IS(yylex(), ',');
-    IS(yylex(), INTEGER); IS(yylval.INTEGER, 12); IS(yylex(), ',');
-    IS(yylex(), INTEGER); IS(yylval.INTEGER, 13); IS(yylex(), ',');
-    IS(yylex(), INTEGER); IS(yylval.INTEGER, 14); IS(yylex(), ',');
-    IS(yylex(), INTEGER); IS(yylval.INTEGER, 15); IS(yylex(), ',');
-    IS(yylex(), INTEGER); IS(yylval.INTEGER, 16); IS(yylex(), ',');
-    IS(yylex(), INTEGER); IS(yylval.INTEGER, 255);
-    IS(yylex(), '\n');
-    IS(yylex(), 0);
-    IS(yylex(), 0);
+    IS(yylex_2(), BYTE);
+    IS(yylex_2(), STRING); STR_IS(yylval.STRING, "0123");
+    IS(yylex_2(), '\n');
+    IS(yylex_2(), BYTE);
+    IS(yylex_2(), STRING); STR_IS(yylval.STRING, "\a\b\x1b\f\n\r\t\v\\'\"?");
+    IS(yylex_2(), '\n');
+    IS(yylex_2(), BYTE);
+    IS(yylex_2(), INTEGER); IS(yylval.INTEGER, 7); IS(yylex_2(), ',');
+    IS(yylex_2(), INTEGER); IS(yylval.INTEGER, 8); IS(yylex_2(), ',');
+    IS(yylex_2(), INTEGER); IS(yylval.INTEGER, 27); IS(yylex_2(), ',');
+    IS(yylex_2(), INTEGER); IS(yylval.INTEGER, 12); IS(yylex_2(), ',');
+    IS(yylex_2(), INTEGER); IS(yylval.INTEGER, 10); IS(yylex_2(), ',');
+    IS(yylex_2(), INTEGER); IS(yylval.INTEGER, 13); IS(yylex_2(), ',');
+    IS(yylex_2(), INTEGER); IS(yylval.INTEGER, 9); IS(yylex_2(), ',');
+    IS(yylex_2(), INTEGER); IS(yylval.INTEGER, 11); IS(yylex_2(), ',');
+    IS(yylex_2(), INTEGER); IS(yylval.INTEGER, 0x5c); IS(yylex_2(), ',');
+    IS(yylex_2(), INTEGER); IS(yylval.INTEGER, 0x27); IS(yylex_2(), ',');
+    IS(yylex_2(), INTEGER); IS(yylval.INTEGER, 0x22); IS(yylex_2(), ',');
+    IS(yylex_2(), INTEGER); IS(yylval.INTEGER, 0x3f);
+    IS(yylex_2(), '\n');
+    IS(yylex_2(), BYTE);
+    IS(yylex_2(), STRING); STR_IS(yylval.STRING,
+                                  "\1" "\2" "\3" "\7" "\17" "\27" "\37" "\77" "\177" "\277" "\377" "\377" "1");
+    IS(yylex_2(), '\n');
+    IS(yylex_2(), BYTE);
+    IS(yylex_2(), INTEGER); IS(yylval.INTEGER, 1); IS(yylex_2(), ',');
+    IS(yylex_2(), INTEGER); IS(yylval.INTEGER, 2); IS(yylex_2(), ',');
+    IS(yylex_2(), INTEGER); IS(yylval.INTEGER, 3); IS(yylex_2(), ',');
+    IS(yylex_2(), INTEGER); IS(yylval.INTEGER, 7); IS(yylex_2(), ',');
+    IS(yylex_2(), INTEGER); IS(yylval.INTEGER, 15); IS(yylex_2(), ',');
+    IS(yylex_2(), INTEGER); IS(yylval.INTEGER, 23); IS(yylex_2(), ',');
+    IS(yylex_2(), INTEGER); IS(yylval.INTEGER, 31); IS(yylex_2(), ',');
+    IS(yylex_2(), INTEGER); IS(yylval.INTEGER, 63); IS(yylex_2(), ',');
+    IS(yylex_2(), INTEGER); IS(yylval.INTEGER, 127); IS(yylex_2(), ',');
+    IS(yylex_2(), INTEGER); IS(yylval.INTEGER, 191); IS(yylex_2(), ',');
+    IS(yylex_2(), INTEGER); IS(yylval.INTEGER, 255);
+    IS(yylex_2(), '\n');
+    IS(yylex_2(), BYTE);
+    IS(yylex_2(), STRING); STR_IS(yylval.STRING,
+                                  "\x1" "\x2" "\x9" "\xa" "\xb" "\xc" "\xd" "\xe" "\xf" "\x10" "\xff");
+    IS(yylex_2(), '\n');
+    IS(yylex_2(), BYTE);
+    IS(yylex_2(), INTEGER); IS(yylval.INTEGER, 1); IS(yylex_2(), ',');
+    IS(yylex_2(), INTEGER); IS(yylval.INTEGER, 2); IS(yylex_2(), ',');
+    IS(yylex_2(), INTEGER); IS(yylval.INTEGER, 9); IS(yylex_2(), ',');
+    IS(yylex_2(), INTEGER); IS(yylval.INTEGER, 10); IS(yylex_2(), ',');
+    IS(yylex_2(), INTEGER); IS(yylval.INTEGER, 11); IS(yylex_2(), ',');
+    IS(yylex_2(), INTEGER); IS(yylval.INTEGER, 12); IS(yylex_2(), ',');
+    IS(yylex_2(), INTEGER); IS(yylval.INTEGER, 13); IS(yylex_2(), ',');
+    IS(yylex_2(), INTEGER); IS(yylval.INTEGER, 14); IS(yylex_2(), ',');
+    IS(yylex_2(), INTEGER); IS(yylval.INTEGER, 15); IS(yylex_2(), ',');
+    IS(yylex_2(), INTEGER); IS(yylval.INTEGER, 16); IS(yylex_2(), ',');
+    IS(yylex_2(), INTEGER); IS(yylval.INTEGER, 255);
+    IS(yylex_2(), '\n');
+    IS(yylex_2(), 0);
+    IS(yylex_2(), 0);
     pop_input_file();
     OK(0 == remove("test.asm"));
 
@@ -722,26 +722,26 @@ void test_strings(void) {
            "defb " DQ "hello" DQ DQ "world" DQ DQ DQ NL
           );
     push_input_file("test.asm");
-    IS(yylex(), BYTE);
-    IS(yylex(), STRING); STR_IS(yylval.STRING, "0123");
-    IS(yylex(), '\n');
-    IS(yylex(), BYTE);
-    IS(yylex(), STRING); STR_IS(yylval.STRING, BS "a" BS "b" BS "e");
-    IS(yylex(), '\n');
-    IS(yylex(), BYTE);
-    IS(yylex(), STRING); STR_IS(yylval.STRING, BS "1" BS "2" BS "3");
-    IS(yylex(), '\n');
-    IS(yylex(), BYTE);
-    IS(yylex(), STRING); STR_IS(yylval.STRING, BS "x1" BS "X2");
-    IS(yylex(), '\n');
-    IS(yylex(), BYTE);
-    IS(yylex(), STRING); STR_IS(yylval.STRING, SQ);
-    IS(yylex(), '\n');
-    IS(yylex(), BYTE);
-    IS(yylex(), STRING); STR_IS(yylval.STRING, "hello" DQ "world" DQ);
-    IS(yylex(), '\n');
-    IS(yylex(), 0);
-    IS(yylex(), 0);
+    IS(yylex_2(), BYTE);
+    IS(yylex_2(), STRING); STR_IS(yylval.STRING, "0123");
+    IS(yylex_2(), '\n');
+    IS(yylex_2(), BYTE);
+    IS(yylex_2(), STRING); STR_IS(yylval.STRING, BS "a" BS "b" BS "e");
+    IS(yylex_2(), '\n');
+    IS(yylex_2(), BYTE);
+    IS(yylex_2(), STRING); STR_IS(yylval.STRING, BS "1" BS "2" BS "3");
+    IS(yylex_2(), '\n');
+    IS(yylex_2(), BYTE);
+    IS(yylex_2(), STRING); STR_IS(yylval.STRING, BS "x1" BS "X2");
+    IS(yylex_2(), '\n');
+    IS(yylex_2(), BYTE);
+    IS(yylex_2(), STRING); STR_IS(yylval.STRING, SQ);
+    IS(yylex_2(), '\n');
+    IS(yylex_2(), BYTE);
+    IS(yylex_2(), STRING); STR_IS(yylval.STRING, "hello" DQ "world" DQ);
+    IS(yylex_2(), '\n');
+    IS(yylex_2(), 0);
+    IS(yylex_2(), 0);
     pop_input_file();
     OK(0 == remove("test.asm"));
 
@@ -770,28 +770,28 @@ void test_strings(void) {
            "defb " DQ "hello" DQ DQ "world" DQ DQ DQ NL
           );
     push_input_file("test.asm");
-    IS(yylex(), BYTE);
-    IS(yylex(), STRING); STR_IS(yylval.STRING, "0123");
-    IS(yylex(), '\n');
-    IS(yylex(), BYTE);
-    IS(yylex(), STRING); STR_IS(yylval.STRING, BS "a" BS "b" BS "e");
-    IS(yylex(), '\n');
-    IS(yylex(), BYTE);
-    IS(yylex(), STRING); STR_IS(yylval.STRING, BS "1" BS "2" BS "3");
-    IS(yylex(), '\n');
-    IS(yylex(), BYTE);
-    IS(yylex(), STRING); STR_IS(yylval.STRING, BS "x1" BS "X2");
-    IS(yylex(), '\n');
-    IS(yylex(), BYTE);
-    IS(yylex(), STRING); STR_IS(yylval.STRING, SQ);
-    IS(yylex(), '\n');
-    IS(yylex(), BYTE);
-    IS(yylex(), STRING); STR_IS(yylval.STRING, "hello");
-    IS(yylex(), STRING); STR_IS(yylval.STRING, "world");
-    IS(yylex(), STRING); STR_IS(yylval.STRING, "");
-    IS(yylex(), '\n');
-    IS(yylex(), 0);
-    IS(yylex(), 0);
+    IS(yylex_2(), BYTE);
+    IS(yylex_2(), STRING); STR_IS(yylval.STRING, "0123");
+    IS(yylex_2(), '\n');
+    IS(yylex_2(), BYTE);
+    IS(yylex_2(), STRING); STR_IS(yylval.STRING, BS "a" BS "b" BS "e");
+    IS(yylex_2(), '\n');
+    IS(yylex_2(), BYTE);
+    IS(yylex_2(), STRING); STR_IS(yylval.STRING, BS "1" BS "2" BS "3");
+    IS(yylex_2(), '\n');
+    IS(yylex_2(), BYTE);
+    IS(yylex_2(), STRING); STR_IS(yylval.STRING, BS "x1" BS "X2");
+    IS(yylex_2(), '\n');
+    IS(yylex_2(), BYTE);
+    IS(yylex_2(), STRING); STR_IS(yylval.STRING, SQ);
+    IS(yylex_2(), '\n');
+    IS(yylex_2(), BYTE);
+    IS(yylex_2(), STRING); STR_IS(yylval.STRING, "hello");
+    IS(yylex_2(), STRING); STR_IS(yylval.STRING, "world");
+    IS(yylex_2(), STRING); STR_IS(yylval.STRING, "");
+    IS(yylex_2(), '\n');
+    IS(yylex_2(), 0);
+    IS(yylex_2(), 0);
     pop_input_file();
     OK(0 == remove("test.asm"));
 
@@ -818,7 +818,7 @@ void test_strings(void) {
 
 int exec_scan_error(void) {
     push_input_file("test.asm");
-    while (yylex() != 0) {}
+    while (yylex_2() != 0) {}
     pop_input_file();
     OK(0 == remove("test.asm"));
     return EXIT_SUCCESS;

@@ -1,4 +1,4 @@
-/* A Bison parser, made by GNU Bison 3.5.4.  */
+/* A Bison parser, made by GNU Bison 3.6.4.  */
 
 /* Bison interface for Yacc-like parsers in C
 
@@ -31,8 +31,9 @@
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
-/* Undocumented macros, especially those whose name start with YY_,
-   are private implementation details.  Do not rely on them.  */
+/* DO NOT RELY ON FEATURES THAT ARE NOT DOCUMENTED in the manual,
+   especially those whose name start with YY_ or yy_.  They are
+   private implementation details that can be changed or removed.  */
 
 #ifndef YY_YY_GRAM_H_INCLUDED
 # define YY_YY_GRAM_H_INCLUDED
@@ -50,88 +51,89 @@ extern int yydebug;
 #include "parse.h"
 
 
-/* Token type.  */
+/* Token kinds.  */
 #ifndef YYTOKENTYPE
 # define YYTOKENTYPE
 enum yytokentype {
-    IDENT = 258,
-    INTEGER = 259,
-    LABEL = 260,
-    STRING = 261,
-    A = 262,
-    A_ = 263,
-    F = 264,
-    F_ = 265,
-    AF = 266,
-    AF_ = 267,
-    B = 268,
-    B_ = 269,
-    C = 270,
-    C_ = 271,
-    BC = 272,
-    BC_ = 273,
-    D = 274,
-    D_ = 275,
-    E = 276,
-    E_ = 277,
-    DE = 278,
-    DE_ = 279,
-    H = 280,
-    H_ = 281,
-    L = 282,
-    L_ = 283,
-    HL = 284,
-    HL_ = 285,
-    IX = 286,
-    IXH = 287,
-    IXL = 288,
-    IY = 289,
-    IYH = 290,
-    IYL = 291,
-    SP = 292,
-    I = 293,
-    R = 294,
-    NC = 295,
-    NZ = 296,
-    Z = 297,
-    PO = 298,
-    PE = 299,
-    P = 300,
-    M = 301,
-    DJNZ = 302,
-    EX = 303,
-    HALT = 304,
-    LD = 305,
-    NOP = 306,
-    RET = 307,
-    BYTE = 308,
-    WORD = 309,
-    LOR = 310,
-    LXOR = 312,
-    LAND = 314,
-    NE = 316,
-    LE = 318,
-    GE = 320,
-    LS = 322,
-    RS = 324,
-    UPLUS = 326,
-    UMINUS = 327,
-    POW = 328
+    YYEMPTY = -2,
+    YYEOF = 0,                     /* "end of file"  */
+    YYerror = 256,                 /* error  */
+    YYUNDEF = 257,                 /* "invalid token"  */
+    IDENT = 258,                   /* IDENT  */
+    INTEGER = 259,                 /* INTEGER  */
+    LABEL = 260,                   /* LABEL  */
+    STRING = 261,                  /* STRING  */
+    A = 262,                       /* A  */
+    A_ = 263,                      /* A_  */
+    F = 264,                       /* F  */
+    F_ = 265,                      /* F_  */
+    AF = 266,                      /* AF  */
+    AF_ = 267,                     /* AF_  */
+    B = 268,                       /* B  */
+    B_ = 269,                      /* B_  */
+    C = 270,                       /* C  */
+    C_ = 271,                      /* C_  */
+    BC = 272,                      /* BC  */
+    BC_ = 273,                     /* BC_  */
+    D = 274,                       /* D  */
+    D_ = 275,                      /* D_  */
+    E = 276,                       /* E  */
+    E_ = 277,                      /* E_  */
+    DE = 278,                      /* DE  */
+    DE_ = 279,                     /* DE_  */
+    H = 280,                       /* H  */
+    H_ = 281,                      /* H_  */
+    L = 282,                       /* L  */
+    L_ = 283,                      /* L_  */
+    HL = 284,                      /* HL  */
+    HL_ = 285,                     /* HL_  */
+    IX = 286,                      /* IX  */
+    IXH = 287,                     /* IXH  */
+    IXL = 288,                     /* IXL  */
+    IY = 289,                      /* IY  */
+    IYH = 290,                     /* IYH  */
+    IYL = 291,                     /* IYL  */
+    SP = 292,                      /* SP  */
+    I = 293,                       /* I  */
+    R = 294,                       /* R  */
+    NC = 295,                      /* NC  */
+    NZ = 296,                      /* NZ  */
+    Z = 297,                       /* Z  */
+    PO = 298,                      /* PO  */
+    PE = 299,                      /* PE  */
+    P = 300,                       /* P  */
+    M = 301,                       /* M  */
+    DJNZ = 302,                    /* DJNZ  */
+    EX = 303,                      /* EX  */
+    HALT = 304,                    /* HALT  */
+    LD = 305,                      /* LD  */
+    NOP = 306,                     /* NOP  */
+    RET = 307,                     /* RET  */
+    BYTE = 308,                    /* BYTE  */
+    WORD = 309,                    /* WORD  */
+    LOR = 310,                     /* LOR  */
+    LXOR = 312,                    /* LXOR  */
+    LAND = 314,                    /* LAND  */
+    NE = 316,                      /* NE  */
+    LE = 318,                      /* LE  */
+    GE = 320,                      /* GE  */
+    LS = 322,                      /* LS  */
+    RS = 324,                      /* RS  */
+    UPLUS = 326,                   /* UPLUS  */
+    UMINUS = 327,                  /* UMINUS  */
+    POW = 328                      /* POW  */
 };
+typedef enum yytokentype yytoken_kind_t;
 #endif
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE {
+    const char* LABEL;                       /* LABEL  */
+    const char* STRING;                      /* STRING  */
+    ident_t IDENT;                           /* IDENT  */
+    int INTEGER;                             /* INTEGER  */
 
-    /* LABEL  */
-    const char* LABEL;
-    /* STRING  */
-    const char* STRING;
-    /* IDENT  */
-    ident_t IDENT;
-    /* INTEGER  */
-    int INTEGER;
 
 };
 typedef union YYSTYPE YYSTYPE;

@@ -512,7 +512,7 @@ static void clear_queue(void) {
 	yynexttok = -1;
 }
 
-int yylex(void) {
+int yylex_2(void) {
 	/* get next token */
 	int tok = (yynexttok >= 0) ? get_next_token() : yylex_1();
 	switch (yystate) {
