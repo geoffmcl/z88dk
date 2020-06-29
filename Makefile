@@ -46,10 +46,10 @@ ALL = setup bin/appmake$(EXESUFFIX) bin/z88dk-copt$(EXESUFFIX) bin/z88dk-zcpp$(E
 	bin/z88dk-ticks$(EXESUFFIX) bin/z88dk-z80svg$(EXESUFFIX) \
 	bin/z88dk-font2pv1000$(EXESUFFIX) bin/z88dk-basck$(EXESUFFIX) \
 	testsuite bin/z88dk-lib$(EXESUFFIX)
-ALL_EXT = bin/zsdcc$(EXESUFFIX)
+ALL_EXT = bin/zsdcc$(EXESUFFIX) bin/reflex$(EXESUFFIX)
 
 .PHONY: $(ALL)
-all: 	$(ALL) $(ALL_EXT)
+all: 	$(ALL_EXT) $(ALL) 
 
 setup:
 	$(shell if [ "${git_count}" != "" ]; then \
@@ -66,6 +66,8 @@ setup:
 		fi)
 	@mkdir -p bin
 
+bin/reflex$(EXESUFFIX):
+	$(MAKE) -C ext PREFIX=`pwd`
 
 bin/zsdcc$(EXESUFFIX):
 	svn checkout -r 11690 https://svn.code.sf.net/p/sdcc/code/trunk/sdcc -q $(SDCC_PATH)
