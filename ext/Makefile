@@ -14,7 +14,7 @@ PREFIX 			?= ..
 all: $(PREFIX)/bin/reflex$(EXESUFFIX)
 
 $(PREFIX)/bin/reflex$(EXESUFFIX):
-	cd RE-flex && sh clean.sh
-	cd RE-flex && sh build.sh
+	cd RE-flex && ./clean.sh
+	cd RE-flex && ./build.sh
 	$(INSTALL) RE-flex/bin/$(EXEDIR)/reflex$(EXESUFFIX) $(PREFIX)/bin/reflex$(EXESUFFIX)
 
