@@ -5,7 +5,9 @@
 # License: http://www.perlfoundation.org/artistic_license_2_0
 # Repository: https://github.com/z88dk/z88dk
 #------------------------------------------------------------------------------
+
 PROJ			:= z80asm
+SUB_PROJ_DIR	:= $(PROJ)2
 
 # EXESUFFIX is passed when cross-compiling Win32 on Linux
 ifeq ($(OS),Windows_NT)
@@ -14,6 +16,9 @@ else
   EXESUFFIX 	?=
 endif
 
+TARGET 			:= $(PROJ)$(EXESUFFIX)
+
+#------------------------------------------------------------------------------
 # UNIXem is needed in both Windows_NT and in a MinGW build in Unix
 ifeq ($(EXESUFFIX),.exe)
   UNIXem_CFLAGS	:= -I../../ext/UNIXem/include
@@ -24,6 +29,8 @@ endif
 CC 				?= gcc
 INSTALL 		?= install
 CROSS			?= 0
+
+CP				:= cp -f 
 
 #------------------------------------------------------------------------------
 # Object files
@@ -38,13 +45,12 @@ TEST_SRC_LIB	:= t/testlib.c
 #------------------------------------------------------------------------------
 # variables
 #------------------------------------------------------------------------------
-TARGET 			= $(PROJ)$(EXESUFFIX)
-
 OPT 			= -O3
 
 STD 			= -std=gnu11
 LOCAL_LIB 		:= lib
 LOCAL_CFLAGS 	+= -MMD -I. -I$(LOCAL_LIB) -It -g -Wall $(STD) $(OPT) \
+				   -I.. \
 				   -I../common \
 				   -I../../ext/optparse \
 				   -I../../ext/regex \
@@ -52,27 +58,21 @@ LOCAL_CFLAGS 	+= -MMD -I. -I$(LOCAL_LIB) -It -g -Wall $(STD) $(OPT) \
 				   $(UNIXem_CFLAGS)
 
 #------------------------------------------------------------------------------
-# main
-#------------------------------------------------------------------------------
-.PHONY: all
+.PHONY: all clean test install astyle
 
+#------------------------------------------------------------------------------
 all: $(TARGET)
 
-$(TARGET): ../config.h $(OBJS)
-	$(CC) $(LOCAL_CFLAGS) $(CFLAGS) -o $(TARGET) $(OBJS) $(LDFLAGS)
+$(TARGET):
+	$(MAKE) -C $(SUB_PROJ_DIR) all
 
-../config.h:
-	@echo \#define PREFIX \"/usr/local/share/z88dk\" 				 > $@
-	@echo \#define UNIX 1											>> $@
-	@echo \#define EXEC_PREFIX \"\"									>> $@
-	@echo \#define Z88DK_VERSION \"build-$(shell date +%Y%m%d)\"	>> $@
+clean::
+	$(MAKE) -C $(SUB_PROJ_DIR) clean
+
+#------------------------------------------------------------------------------
 
 %.o: %.c
 	$(CC) $(LOCAL_CFLAGS) $(CFLAGS) -c -o $@ $<
-
-# parser is too big to optimize with -O3
-parse.o: parse.c
-	$(CC) $(LOCAL_CFLAGS) $(CFLAGS) -O0 -c -o $@ $<
 
 #------------------------------------------------------------------------------
 # z80asm2

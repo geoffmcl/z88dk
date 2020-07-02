@@ -92,7 +92,7 @@ DEF_CLASS_HASH(T, bool ignore_case);	// ignore_case = true for case-insensitive
 *----------------------------------------------------------------------------*/
 #define DEF_CLASS_HASH(T, _ignore_case)										\
 	/* define the class */													\
-	DEF_CLASS(T##Hash);														\
+	DEF_CLASS(T##Hash)														\
 																			\
 	void T##Hash_init ( T##Hash *self )										\
 	{																		\

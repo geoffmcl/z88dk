@@ -46,8 +46,8 @@ DEFINE_dtor_module()
 /*-----------------------------------------------------------------------------
 *   Named Section of code, introduced by "SECTION" keyword
 *----------------------------------------------------------------------------*/
-DEF_CLASS( Section );
-DEF_CLASS_HASH( Section, false );
+DEF_CLASS( Section )
+DEF_CLASS_HASH( Section, false )
 
 void Section_init (Section *self)   
 {

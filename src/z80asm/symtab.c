@@ -34,7 +34,7 @@ SymbolHash *static_symtab = NULL;
 /*-----------------------------------------------------------------------------
 *   Symbol Table
 *----------------------------------------------------------------------------*/
-DEF_CLASS_HASH( Symbol, false );			/* defines SymbolHash */
+DEF_CLASS_HASH( Symbol, false )			/* defines SymbolHash */
 
 /*-----------------------------------------------------------------------------
 *   join two symbol tables, adding all symbols from source to the target

@@ -20,10 +20,10 @@ Repository: https://github.com/z88dk/z88dk
 *   PUBLIC INTERFACE
 
 // declare the list class
-CLASS_LIST(T);			// T is declared by CLASS(T); defines TList
+CLASS_LIST(T)			// T is declared by CLASS(T); defines TList
 
 // define the list class
-DEF_CLASS_LIST(T);
+DEF_CLASS_LIST(T)
 
 *----------------------------------------------------------------------------*/
 

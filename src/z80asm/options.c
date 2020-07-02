@@ -13,6 +13,7 @@
 #include "hist.h"
 #include "init.h"
 #include "model.h"
+#include "modlink.h"
 #include "options.h"
 #include "srcfile.h"
 #include "str.h"
@@ -164,8 +165,8 @@ void parse_argv( int argc, char *argv[] )
 
     init_module();
 
-    if ( argc == 1 )
-        exit_copyright();					/* exit if no arguments */
+	if ( argc == 1 )
+		exit_copyright();					/* exit if no arguments */
 
 	if (!get_num_errors())
 		process_env_options();				/* process options from Z80ASM environment variable */
@@ -177,7 +178,7 @@ void parse_argv( int argc, char *argv[] )
 		error_no_src_file();				/* no source file */
 
 	if ( ! get_num_errors() )
-        process_files( arg, argc, argv );	/* process each source file */
+		process_files( arg, argc, argv );	/* process each source file */
 
 	make_output_dir();						/* create output directory if needed */
 	include_z80asm_lib();					/* search for z80asm-*.lib, append to library path */

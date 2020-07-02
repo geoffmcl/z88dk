@@ -282,7 +282,7 @@ static bool test_header(FILE* file)
 /*-----------------------------------------------------------------------------
 *   Object file class
 *----------------------------------------------------------------------------*/
-DEF_CLASS(OFile);
+DEF_CLASS(OFile)
 
 void OFile_init(OFile* self)
 {

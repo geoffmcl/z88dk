@@ -8,11 +8,6 @@ Repository: https://github.com/z88dk/z88dk
 */
 
 #include "hist.h"
-#include "../config.h"
-
-#ifndef Z88DK_VERSION
-#define Z88DK_VERSION "build " __DATE__
-#endif
 
 #define COPYRIGHT   "InterLogic 1993-2009, Paulo Custodio 2011-2020"
 

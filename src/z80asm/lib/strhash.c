@@ -22,7 +22,7 @@ Repository: https://github.com/z88dk/z88dk
 /*-----------------------------------------------------------------------------
 *   Define the class
 *----------------------------------------------------------------------------*/
-DEF_CLASS( StrHash );
+DEF_CLASS( StrHash )
 
 void StrHash_init( StrHash *self )
 {

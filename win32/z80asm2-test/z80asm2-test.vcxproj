@@ -18,26 +18,6 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="..\..\src\z80asm2\asm.c" />
-    <ClCompile Include="..\..\src\z80asm2\gram.c" />
-    <ClCompile Include="..\..\src\z80asm2\lex.c" />
-    <ClCompile Include="..\..\src\z80asm2\parse.c" />
-    <ClCompile Include="..\..\src\z80asm2\t\test.c" />
-    <ClCompile Include="..\..\src\z80asm2\t\t_lex.c" />
-    <ClCompile Include="..\..\src\z80asm2\utils.c" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\..\src\z80asm2\asm.h" />
-    <ClInclude Include="..\..\src\z80asm2\gram.h" />
-    <ClInclude Include="..\..\src\z80asm2\lex.h" />
-    <ClInclude Include="..\..\src\z80asm2\parse.h" />
-    <ClInclude Include="..\..\src\z80asm2\t\test.h" />
-    <ClInclude Include="..\..\src\z80asm2\utils.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\..\src\z80asm2\t\test.def" />
-  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{8DD52518-B87F-4189-809B-AEFE2E75FD0D}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>

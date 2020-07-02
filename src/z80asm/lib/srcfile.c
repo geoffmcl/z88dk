@@ -79,7 +79,7 @@ incl_recursion_err_cb_t set_incl_recursion_err_cb( incl_recursion_err_cb_t func 
 /*-----------------------------------------------------------------------------
 *   Class to hold current source file
 *----------------------------------------------------------------------------*/
-DEF_CLASS( SrcFile );
+DEF_CLASS( SrcFile )
 
 void SrcFile_init( SrcFile *self )
 {

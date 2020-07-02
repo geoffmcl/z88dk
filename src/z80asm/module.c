@@ -36,8 +36,8 @@ DEFINE_dtor_module()
 /*-----------------------------------------------------------------------------
 *   Assembly module
 *----------------------------------------------------------------------------*/
-DEF_CLASS( Module );
-DEF_CLASS_LIST( Module );
+DEF_CLASS( Module )
+DEF_CLASS_LIST( Module )
 
 void Module_init (Module *self)   
 {

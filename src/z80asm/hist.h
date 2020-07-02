@@ -9,4 +9,18 @@ Repository: https://github.com/z88dk/z88dk
 
 #pragma once
 
+#include "config.h"
+
+#ifndef PREFIX
+#define PREFIX "/usr/local/share/z88dk"
+#endif
+
+#ifndef Z88DK_VERSION
+#define Z88DK_VERSION "build " __DATE__
+#endif
+
+#ifndef EXEC_PREFIX
+#define EXEC_PREFIX ""
+#endif
+
 extern char copyrightmsg[];

@@ -11,6 +11,7 @@ all: z80asm.md z80asm-future.md z80asm.html z80asm-future.html
 	mv -f $@.tmp $@
 
 .md.html:
+	@echo use grip from https://github.com/joeyespo/grip
 	grip $< --export $@
 
 z80asm.md z80asm-future.md: Makefile make_index.pl

@@ -17,7 +17,7 @@ Repository: https://github.com/z88dk/z88dk
 *   Define List class
 *----------------------------------------------------------------------------*/
 
-DEF_CLASS( List );
+DEF_CLASS( List )
 
 void List_init( List *self )
 {

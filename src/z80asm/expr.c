@@ -367,8 +367,8 @@ int range_size(range_t range)
 /*-----------------------------------------------------------------------------
 *	Class to hold one parsed expression
 *----------------------------------------------------------------------------*/
-DEF_CLASS(Expr);
-DEF_CLASS_LIST(Expr);
+DEF_CLASS(Expr)
+DEF_CLASS_LIST(Expr)
 
 void Expr_init(Expr* self)
 {

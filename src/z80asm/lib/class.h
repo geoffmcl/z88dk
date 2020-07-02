@@ -31,7 +31,7 @@ CLASS(T)
 END_CLASS;
 
 // define the class
-DEF_CLASS(T);
+DEF_CLASS(T)
 
 // helper functions, need to be defined
 void T_init (T *self)   { self->string = m_calloc(1000,1); }
