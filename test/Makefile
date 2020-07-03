@@ -28,4 +28,3 @@ all: src-all
 src-all:
 	$(MAKE) -C ../src/common test
 	$(MAKE) -C ../src/z80asm test
-	$(MAKE) -C ../src/z80asm2 test
