@@ -37,6 +37,7 @@ CP				:= cp -f
 
 #------------------------------------------------------------------------------
 ALL_C_SRCS		:= $(wildcard \
+						$(wildcard doc/*.c) \
 						$(Z80ASM_DIR)/*.c \
 						$(Z80ASM_DIR)/lib/*.c \
 						$(Z88DK_DIR)/src/common/*.c \
@@ -51,6 +52,7 @@ OBJS			:= $(C_SRCS:.c=.o) $(CXX_SRCS:.cpp=.o) $(UNIXem_OBJS)
 DEPENDS			:= $(C_SRCS:.c=.d) $(CXX_SRCS:.cpp=.d)
 
 FLAGS			:= -MMD -g -Wall -Wextra \
+				   -I$(Z80ASM_DIR)/z80asm2/doc \
 				   -I$(Z80ASM_DIR)/lib \
 				   -I$(Z88DK_DIR)/src \
 				   -I$(Z88DK_DIR)/src/common \
@@ -59,7 +61,8 @@ FLAGS			:= -MMD -g -Wall -Wextra \
 				   -I$(Z88DK_DIR)/ext/uthash/src \
 				   $(UNIXem_CFLAGS)
 CCFLAGS			+= -std=gnu11   $(FLAGS)
-CXXFLAGS		+= -std=gnu++14 $(FLAGS)				   
+CXXFLAGS		+= -std=gnu++14 $(FLAGS)
+LDFLAGS			+= -lz
 
 #------------------------------------------------------------------------------
 .PHONY: all clean astyle

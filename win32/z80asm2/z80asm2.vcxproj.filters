@@ -19,6 +19,12 @@
     <Filter Include="Header Files\legacy">
       <UniqueIdentifier>{3e8a6351-4f69-48ab-938a-69ba72cff2c1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\doc">
+      <UniqueIdentifier>{be60e81b-f2ef-4fb4-bacc-1c8a469854af}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\doc">
+      <UniqueIdentifier>{09550b35-8dd4-4862-9ad6-d790a6095d1f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\z80asm\codearea.c">
@@ -155,6 +161,12 @@
     </ClCompile>
     <ClCompile Include="..\..\ext\regex\regfree.c">
       <Filter>Source Files\legacy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\z80asm\z80asm2\doc\z80asm_manual.c">
+      <Filter>Source Files\doc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\z80asm\z80asm2\doc\z80asm_usage.c">
+      <Filter>Source Files\doc</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -325,6 +337,12 @@
     </ClInclude>
     <ClInclude Include="..\..\ext\regex\utils.h">
       <Filter>Header Files\legacy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\z80asm\z80asm2\doc\z80asm_manual.h">
+      <Filter>Header Files\doc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\z80asm\z80asm2\doc\z80asm_usage.h">
+      <Filter>Header Files\doc</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

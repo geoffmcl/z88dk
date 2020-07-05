@@ -4,6 +4,7 @@
 // License: http://www.perlfoundation.org/artistic_license_2_0
 //-----------------------------------------------------------------------------
 
+#include <iostream>
 #include "legacy.h"
 
 int main(int argc, char* argv[]) {

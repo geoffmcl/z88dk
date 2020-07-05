@@ -61,6 +61,8 @@
     <ClCompile Include="..\..\src\z80asm\sym.c" />
     <ClCompile Include="..\..\src\z80asm\symtab.c" />
     <ClCompile Include="..\..\src\z80asm\z80asm.c" />
+    <ClCompile Include="..\..\src\z80asm\z80asm2\doc\z80asm_manual.c" />
+    <ClCompile Include="..\..\src\z80asm\z80asm2\doc\z80asm_usage.c" />
     <ClCompile Include="..\..\src\z80asm\z80asm2\main.cpp" />
     <ClCompile Include="..\..\src\z80asm\z80pass.c" />
     <ClCompile Include="..\..\src\z80asm\zobjfile.c" />
@@ -120,6 +122,8 @@
     <ClInclude Include="..\..\src\z80asm\symtab.h" />
     <ClInclude Include="..\..\src\z80asm\tokens.h" />
     <ClInclude Include="..\..\src\z80asm\z80asm.h" />
+    <ClInclude Include="..\..\src\z80asm\z80asm2\doc\z80asm_manual.h" />
+    <ClInclude Include="..\..\src\z80asm\z80asm2\doc\z80asm_usage.h" />
     <ClInclude Include="..\..\src\z80asm\z80asm2\legacy.h" />
     <ClInclude Include="..\..\src\z80asm\zobjfile.h" />
   </ItemGroup>
@@ -195,7 +199,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>..\..\src\z80asm;..\..\src\common;..\..\src\z80asm\lib;..\..\ext\UNIXem\include;..\..\ext\uthash\src;..\..\ext\regex;..\..\ext\optparse;..\..\src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\src\z80asm\z80asm2\doc;..\..\src\z80asm;..\..\src\common;..\..\src\z80asm\lib;..\..\ext\UNIXem\include;..\..\ext\uthash\src;..\..\ext\regex;..\..\ext\optparse;..\..\src</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -228,7 +232,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>..\..\src\z80asm;..\..\src\common;..\..\src\z80asm\lib;..\..\ext\UNIXem\include;..\..\ext\uthash\src;..\..\ext\regex;..\..\ext\optparse;..\..\src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\src\z80asm\z80asm2\doc;..\..\src\z80asm;..\..\src\common;..\..\src\z80asm\lib;..\..\ext\UNIXem\include;..\..\ext\uthash\src;..\..\ext\regex;..\..\ext\optparse;..\..\src</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

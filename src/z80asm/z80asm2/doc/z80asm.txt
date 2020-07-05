@@ -1,0 +1,531 @@
+  z80asm.md
+
+                z80asm - Z80 module assembler, linker, librarian
+
+   z80asm is part of the [1]z88dk project and is used as the back-end of the
+   z88dk C compilers. It is not to be confused with other non-z88dk related
+   projects with the same name.
+
+   z80asm is a relocatable assembler, linker and librarian that can assemble
+   Intel 8080/8085 and Z80-family assembly files into a relocatable object
+   format, can manage sets of object files in libraries and can build binary
+   images by linking these object files together. The binary images can be
+   defined in different sections, to match the target architecture.
+
+   NOTE: This document is a work-in-porgress. It describes the functionality
+   already working in the assembler in the z80asm2 branch. This document and
+   the ```z80asm-future-md will converge as z80asm2 gets more features and
+   converges to the current capability of z80asm in the master branch.
+
+   ══════════════════════════════════════════════════════════════════════════
+
+   [2](top) [3](keywords) [4](index)
+
+1. Usage ...
+
+   ══════════════════════════════════════════════════════════════════════════
+
+   [5](top) [6](keywords) [7](index)
+
+2. Options
+
+   ══════════════════════════════════════════════════════════════════════════
+
+   [8](top) [9](keywords) [10](index)
+
+  2.1. Preprocessor options
+
+   ══════════════════════════════════════════════════════════════════════════
+
+   [11](top) [12](keywords) [13](index)
+
+    2.1.1. -atoctal (at is octal prefix)
+
+   By default the at-character (@) is used as a binary number prefix.
+
+   With the option [14]-atoctal it is used as the octal number prefix
+   instead.
+
+   ══════════════════════════════════════════════════════════════════════════
+
+   [15](top) [16](keywords) [17](index)
+
+    2.1.2. -dotdirective (period is directive prefix)
+
+   By default the period (.) is used to signal that the next identifier is a
+   label.
+
+   With the option [18]-dotdirective it is used instead to signal that the
+   next identifier is an assembler directive.
+
+   ══════════════════════════════════════════════════════════════════════════
+
+   [19](top) [20](keywords) [21](index)
+
+    2.1.3. -hashhex (hash is hex prefix)
+
+   By default the hash-character (#) is used to signal that the next
+   expression should be compiled as an immediate value. This meaning,
+   although common in assemblers, is a no-operation in z80asm.
+
+   With the option [22]-hashhex the hash-character is used as the hexadecimal
+   number prefix instead.
+
+   ══════════════════════════════════════════════════════════════════════════
+
+   [23](top) [24](keywords) [25](index)
+
+    2.1.4. -labelcol1 (labels at column 1)
+
+   By default z80asm needs either a period (.) prefix (but see
+   [26]-dotdirective ) or a colon (:) suffix to signal that an identifier is
+   a label, and white space at the beginning of a line is not significant.
+
+   With the option [27]-labelcol1 an identifier is a label if started at
+   column 1, or a directive or opcode if started after white space.
+
+   ══════════════════════════════════════════════════════════════════════════
+
+   [28](top) [29](keywords) [30](index)
+
+    2.1.5. -ucase (upper case)
+
+   By default z80asm is case-sensitive for identifiers, but case-insensitive
+   for assembly keywords (opcodes, directives, registers and flags).
+
+   The option [31]-ucase causes z80asm to convert all the symbols to
+   upper-case, so that code that assumes case-insentivity can be assembled.
+
+   ══════════════════════════════════════════════════════════════════════════
+
+   [32](top) [33](keywords) [34](index)
+
+3. Input Files
+
+   ══════════════════════════════════════════════════════════════════════════
+
+   [35](top) [36](keywords) [37](index)
+
+  3.1. Source File Format
+
+   The assembler parses source files with any of the common end-of-line
+   termination sequences ("\r", "\n" or "\r\n"). Each line starts with an
+   optional label and can contain assembly directives (i.e. instructions to
+   the assembler), assembly instructions (i.e. code to be translated into
+   object code for the specific processor) or blanks and comments.
+
+   A single backslash character (\) may be used to separate multiple
+   statements in a single line.
+
+ org 0                     ; assembly directive
+ start: push bc\pop hl     ; define a label and add two assembly opcodes
+ ret                       ; assembly opcode can be at the first column
+
+   Differently to most other assemblers, white space is not significant, i.e.
+   a label can be defined after white space, and an opcode can be written at
+   column 1 (but see option [38]-labelcol1 ).
+
+   ══════════════════════════════════════════════════════════════════════════
+
+   [39](top) [40](keywords) [41](index)
+
+  3.2. Comments
+
+   Comments may start with a semi-colon (;) or two slashes (//) and end at
+   the end of the line, or may start with slash-star (/*) and end with
+   star-slash (*/), possibly spanning multiple lines.
+
+ ld a, 1                   ; this is a comment
+ ld b, 2                   // another comment
+ ld c, /* multi-line comment is valid
+          in the middle of an instruction
+       */ 3                ; C = 3
+
+   ══════════════════════════════════════════════════════════════════════════
+
+   [42](top) [43](keywords) [44](index)
+
+  3.3. Symbols
+
+   All symbols in the code (labels, variables, ...) are named with unique
+   identifiers. Identifiers start with a letter or underscore (_), and can
+   contain letters, digits, underscores or periods (.). Identifiers are
+   case-sensitive (but see option [45]-ucase ).
+
+   ══════════════════════════════════════════════════════════════════════════
+
+   [46](top) [47](keywords) [48](index)
+
+  3.4. Labels
+
+   A label is a symbol that represents the current assembly address (ASMPC)
+   and is defined at the start of a line by prefixing a symbol with a period
+   (.) (but see [49]-dotdirective ) or suffixing it with a colon (:), i.e.
+   either .label or label: (but see [50]-labelcol1 ).
+
+   ══════════════════════════════════════════════════════════════════════════
+
+   [51](top) [52](keywords) [53](index)
+
+  3.5. Numbers
+
+   The assembler accepts numbers in decimal, hexadecimal, octal and binary.
+   Different syntaxes are allowed to simplify porting code written for other
+   assemblers. Some of the prefix characters are also used as operators; in
+   this case a space may be needed to signal the difference, e.g.
+
+ ld a, %10     ; A = 2 (10 binary)
+ ld a, 12 % 10 ; A = 2 (remainder of 12 divided by 10)
+
+   All expressions are computed as signed integers with the host platform's
+   integer size (32-bit or 64-bit in the most common platforms). Expression
+   evaluation follows the operator precedence of C (but see -noprec).
+
+   ══════════════════════════════════════════════════════════════════════════
+
+   [54](top) [55](keywords) [56](index)
+
+    3.5.1. Decimal
+
+   Decimal numbers are a sequence of decimal digits (0..9), optionally
+   followed by a d or D - all prefixes and suffixes are case-insensitive.
+   Leading zeros are insignificant - note the difference from C, where a
+   leading zero means octal.
+
+ ld a, 99
+ ld a, 99d
+
+   ══════════════════════════════════════════════════════════════════════════
+
+   [57](top) [58](keywords) [59](index)
+
+    3.5.2. Hexadecimal
+
+   Hexadecimal numbers are a sequence of hexadecimal digits (0..9 and A..F,
+   case-insensitive), either prefixed or suffixed with an hexadecimal marker.
+   If the marker is a suffix, and the number starts with a letter, then a
+   leading zero has to be added.
+
+   The hexadecimal prefix $ is also the ASMPC identifier if not followed by a
+   hexadecimal number, i.e. the address of the instruction being assembled.
+
+   The hexadecimal prefix # is only recognized with the option [60]-hashhex .
+
+ ld a, $FF
+ ld a, #FF          ; only with option  [-hashhex](#2_1_3_)
+ ld a, 0xFF
+ ld a, 0FFh
+
+   ══════════════════════════════════════════════════════════════════════════
+
+   [61](top) [62](keywords) [63](index)
+
+    3.5.3. Octal
+
+   Octal numbers are a sequence of octal digits (0..7), either prefixed or
+   suffixed with an octal marker.
+
+   The octal-prefix @ is only recognized with the option [64]-atoctal .
+
+ ld a, @77          ; only with option  [-atoctal](#2_1_1_)
+ ld a, 0o77
+ ld a, 0q77
+ ld a, 77o
+ ld a, 77q
+
+   ══════════════════════════════════════════════════════════════════════════
+
+   [65](top) [66](keywords) [67](index)
+
+    3.5.4. Binary
+
+   Binary numbers are a sequence of binary digits (0..1), either prefixed or
+   suffixed with a binary marker.
+
+   The binary prefix % is also the modulus operator, if not followed by a
+   binary digit.
+
+   The binary prefix @ is recognized unless the option [68]-atoctal is given.
+
+ ld a, %11
+ ld a, @11           ; except with option  [-atoctal](#2_1_1_)
+ ld a, 0b11
+ ld a, 11b
+
+   ══════════════════════════════════════════════════════════════════════════
+
+   [69](top) [70](keywords) [71](index)
+
+    3.5.5. Bitmaps
+
+   Binary numbers can be specified as bitmaps, with # as 1 and - as 0, using
+   the binary prefix (@ or %) immediately followed by a double-quoted string
+   of hashes and dashes.
+
+ defb @"---##---"
+ defb @"-##--##-"
+ defb %"-##-----"
+ defb %"-##-----"
+ defb @"-##--##-"
+ defb @"---##---"
+
+   ══════════════════════════════════════════════════════════════════════════
+
+   [72](top) [73](keywords) [74](index)
+
+  3.6. Keywords
+
+   Processor registers (BC, DE, ...) and flags (NZ, Z, ...), and assembly
+   ASMPC, representing the current assembly location, are reserved keywords.
+   They cannot be used as identifiers, and are case-insensitive.
+
+   ══════════════════════════════════════════════════════════════════════════
+
+   [75](top) [76](keywords) [77](index)
+
+  3.7. Directives and Opcodes
+
+   Assembler directives (ORG, INCLUDE, ...) and processor opcodes (NOP, LD,
+   ...) are interpreted as directives or opcodes when appearing at the start
+   of the statement or after a label definition, or as regular identifiers
+   otherwise. The directives and opcodes are case-insensitive.
+
+ jr: jr jr  ; silly example, jr is both a label and an opcode
+            ; while correct code, it's confusing, don't do it
+
+   ══════════════════════════════════════════════════════════════════════════
+
+   [78](top) [79](keywords) [80](index)
+
+4. Object File Format
+
+   ══════════════════════════════════════════════════════════════════════════
+
+   [81](top) [82](keywords) [83](index)
+
+  4.1. Object Files
+
+   ══════════════════════════════════════════════════════════════════════════
+
+   [84](top) [85](keywords) [86](index)
+
+  4.2. Library File Format
+
+   ══════════════════════════════════════════════════════════════════════════
+
+   [87](top) [88](keywords) [89](index)
+
+5. Copyright
+
+   The original z80asm module assembler was written by Gunther Strube. It was
+   converted from QL SuperBASIC version 0.956, initially ported to Lattice C,
+   and then to C68 on QDOS.
+
+   It has been maintained since 2011 by Paulo Custodio.
+
+   Copyright (C) Gunther Strube, InterLogic 1993-99
+   Copyright (C) Paulo Custodio, 2011-2020
+
+   ══════════════════════════════════════════════════════════════════════════
+
+   [90](top) [91](keywords) [92](index)
+
+6. License
+
+   Artistic License 2.0 [93]http://www.perlfoundation.org/artisticlicense2_0
+
+   ══════════════════════════════════════════════════════════════════════════
+
+   [94](top) [95](keywords) [96](index)
+
+7. Keywords
+
+   [97]-atoctal [98]-dotdirective [99]-hashhex [100]-labelcol1 [101]-ucase
+
+   ══════════════════════════════════════════════════════════════════════════
+
+   [102](top) [103](keywords) [104](index)
+
+8. Index
+
+     • [105]1. Usage ...
+     • [106]2. Options
+
+          • [107]2.1. Preprocessor options
+
+               • [108]2.1.1. [109]-atoctal (at is octal prefix)
+               • [110]2.1.2. [111]-dotdirective (period is directive prefix)
+               • [112]2.1.3. [113]-hashhex (hash is hex prefix)
+               • [114]2.1.4. [115]-labelcol1 (labels at column 1)
+               • [116]2.1.5. [117]-ucase (upper case)
+
+     • [118]3. Input Files
+
+          • [119]3.1. Source File Format
+          • [120]3.2. Comments
+          • [121]3.3. Symbols
+          • [122]3.4. Labels
+          • [123]3.5. Numbers
+
+               • [124]3.5.1. Decimal
+               • [125]3.5.2. Hexadecimal
+               • [126]3.5.3. Octal
+               • [127]3.5.4. Binary
+               • [128]3.5.5. Bitmaps
+
+          • [129]3.6. Keywords
+          • [130]3.7. Directives and Opcodes
+
+     • [131]4. Object File Format
+
+          • [132]4.1. Object Files
+          • [133]4.2. Library File Format
+
+     • [134]5. Copyright
+     • [135]6. License
+     • [136]7. Keywords
+     • [137]8. Index
+
+    
+
+References
+
+   Visible links
+   1. http://www.z88dk.org/
+   2. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#top
+   3. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#keywords
+   4. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#index
+   5. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#top
+   6. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#keywords
+   7. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#index
+   8. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#top
+   9. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#keywords
+  10. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#index
+  11. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#top
+  12. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#keywords
+  13. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#index
+  14. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#2_1_1_
+  15. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#top
+  16. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#keywords
+  17. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#index
+  18. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#2_1_2_
+  19. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#top
+  20. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#keywords
+  21. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#index
+  22. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#2_1_3_
+  23. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#top
+  24. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#keywords
+  25. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#index
+  26. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#2_1_2_
+  27. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#2_1_4_
+  28. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#top
+  29. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#keywords
+  30. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#index
+  31. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#2_1_5_
+  32. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#top
+  33. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#keywords
+  34. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#index
+  35. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#top
+  36. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#keywords
+  37. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#index
+  38. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#2_1_4_
+  39. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#top
+  40. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#keywords
+  41. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#index
+  42. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#top
+  43. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#keywords
+  44. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#index
+  45. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#2_1_5_
+  46. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#top
+  47. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#keywords
+  48. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#index
+  49. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#2_1_2_
+  50. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#2_1_4_
+  51. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#top
+  52. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#keywords
+  53. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#index
+  54. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#top
+  55. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#keywords
+  56. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#index
+  57. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#top
+  58. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#keywords
+  59. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#index
+  60. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#2_1_3_
+  61. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#top
+  62. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#keywords
+  63. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#index
+  64. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#2_1_1_
+  65. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#top
+  66. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#keywords
+  67. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#index
+  68. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#2_1_1_
+  69. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#top
+  70. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#keywords
+  71. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#index
+  72. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#top
+  73. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#keywords
+  74. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#index
+  75. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#top
+  76. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#keywords
+  77. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#index
+  78. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#top
+  79. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#keywords
+  80. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#index
+  81. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#top
+  82. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#keywords
+  83. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#index
+  84. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#top
+  85. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#keywords
+  86. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#index
+  87. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#top
+  88. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#keywords
+  89. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#index
+  90. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#top
+  91. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#keywords
+  92. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#index
+  93. Artistic License 2.0
+	http://www.perlfoundation.org/artisticlicense2_0
+  94. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#top
+  95. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#keywords
+  96. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#index
+  97. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#2_1_1_
+  98. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#2_1_2_
+  99. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#2_1_3_
+ 100. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#2_1_4_
+ 101. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#2_1_5_
+ 102. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#top
+ 103. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#keywords
+ 104. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#index
+ 105. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#1_
+ 106. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#2_
+ 107. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#2_1_
+ 108. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#2_1_1_
+ 109. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#2_1_1_
+ 110. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#2_1_2_
+ 111. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#2_1_2_
+ 112. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#2_1_3_
+ 113. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#2_1_3_
+ 114. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#2_1_4_
+ 115. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#2_1_4_
+ 116. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#2_1_5_
+ 117. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#2_1_5_
+ 118. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#3_
+ 119. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#3_1_
+ 120. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#3_2_
+ 121. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#3_3_
+ 122. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#3_4_
+ 123. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#3_5_
+ 124. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#3_5_1_
+ 125. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#3_5_2_
+ 126. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#3_5_3_
+ 127. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#3_5_4_
+ 128. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#3_5_5_
+ 129. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#3_6_
+ 130. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#3_7_
+ 131. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#4_
+ 132. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#4_1_
+ 133. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#4_2_
+ 134. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#5_
+ 135. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#6_
+ 136. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#7_
+ 137. file:///home/paulo/git/z88dk/src/z80asm/z80asm2/doc/z80asm.html#8_
