@@ -5,7 +5,6 @@
 # Copyright (C) Gunther Strube, InterLogic 1993-99
 # Copyright (C) Paulo Custodio, 2011-2020
 # License: The Artistic License 2.0, http://www.perlfoundation.org/artistic_license_2_0
-# Repository: https://github.com/z88dk/z88dk/
 #
 # Bug report:
 # alvin (alvin_albrecht@hotmail.com) <lists@suborbital.org.uk> Fri, Dec 4, 2015 at 3:11 AM 

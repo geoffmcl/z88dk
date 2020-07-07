@@ -5,7 +5,6 @@
 # Copyright (C) Gunther Strube, InterLogic 1993-99
 # Copyright (C) Paulo Custodio, 2011-2020
 # License: The Artistic License 2.0, http://www.perlfoundation.org/artistic_license_2_0
-# Repository: https://github.com/z88dk/z88dk
 #
 # Test https://github.com/z88dk/z88dk/issues/65
 # z80asm: separate BSS section not generated from object file if BSS org was -1 at assembly time

@@ -5,7 +5,6 @@
 # Copyright (C) Gunther Strube, InterLogic 1993-99
 # Copyright (C) Paulo Custodio, 2011-2020
 # License: The Artistic License 2.0, http://www.perlfoundation.org/artistic_license_2_0
-# Repository: https://github.com/z88dk/z88dk/
 #
 # Test https://github.com/z88dk/z88dk/issues/270
 # z80asm: ignoring org -1 for sections when data is in object file separate from memory map file

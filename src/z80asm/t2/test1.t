@@ -2,14 +2,14 @@
 
 #------------------------------------------------------------------------------
 # z80asm tests
-# Copyright (C) Paulo Custodio, 2020
-# License: http://www.perlfoundation.org/artistic_license_2_0
+# Copyright (C) Paulo Custodio, 2011-2020
+# License: The Artistic License 2.0, http://www.perlfoundation.org/artistic_license_2_0
 #------------------------------------------------------------------------------
 use strict;
 use warnings;
 use testlib;
 
-note "Test issue #1221";
+note "Test issue #1221";	# z80asm: support db, dw, ... as shortcuts to defb, defw, ...
 my $test = test_name();
 
 path("$test.asm")->spew(<<END);
