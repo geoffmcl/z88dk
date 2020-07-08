@@ -23,7 +23,6 @@ License: The Artistic License 2.0, http://www.perlfoundation.org/artistic_licens
 #include "utstring.h"
 #include "zobjfile.h"
 #include <sys/stat.h>
-#include "z80asm2\legacy.h"
 
 /* external functions */
 void Z80pass2( void );
