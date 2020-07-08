@@ -72,7 +72,7 @@ FLAGS			:= $(OPT) -MMD -g -Wall \
 
 CFLAGS			+= -std=gnu11           $(FLAGS)
 CXXFLAGS		+= -std=gnu++14 -Wextra $(FLAGS)
-LDFLAGS			+= -L../../ext/RE-flex/lib -lreflexmin
+LDFLAGS			+= -L../../ext/RE-flex/lib -l:libreflexmin.a	# link statically
 
 #------------------------------------------------------------------------------
 .PHONY: all clean test install astyle z80asm_lib
