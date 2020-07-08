@@ -119,7 +119,7 @@ clean::
 #------------------------------------------------------------------------------
 # install
 #------------------------------------------------------------------------------
-install: $(TARGET) z80asm_lib
+install: subproj $(TARGET) z80asm_lib
 	$(INSTALL) $(TARGET)     $(PREFIX)/bin/$(EXEC_PREFIX)$(TARGET)
 	$(INSTALL) asmpp.pl      $(PREFIX)/bin/asmpp.pl
 	$(MAKE) -C dev/z80asm_lib install PREFIX=$(PREFIX_SHARE)
