@@ -124,7 +124,7 @@ $(TARGET): cpp/options.yy.o
 cpp/options.yy.o: cpp/options.yy.cpp
 
 cpp/options.yy.cpp cpp/options.yy.h: cpp/options.l
-	$(REFLEX) options.l \
+	$(REFLEX) cpp/options.l \
 		--lexer=OptionsLexer \
 		--outfile=cpp/options.yy.cpp \
 		--header-file=cpp/options.yy.h
