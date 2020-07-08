@@ -1,16 +1,13 @@
 #------------------------------------------------------------------------------
-# Z88DK Z80 Module Assembler
-#
-# Build and test z80asm-*.lib
-#
-# Copyright (C) Gunther Strube, InterLogic 1993-99
-# Copyright (C) Paulo Custodio, 2011-2020
+# z80asm restart
+# Copyright (c) Paulo Custodio, 2011-2020
 # License: The Artistic License 2.0, http://www.perlfoundation.org/artistic_license_2_0
 #------------------------------------------------------------------------------
+
 PROJ		:= z80asm
 
 INSTALL 	?= install
-Z80ASM_EXE	?= ../../$(PROJ)
+Z80ASM_EXE	?= ../$(PROJ)
 SRC		:= $(filter-out test.asm,$(wildcard *.asm))
 
 #------------------------------------------------------------------------------
@@ -19,7 +16,7 @@ SRC		:= $(filter-out test.asm,$(wildcard *.asm))
 define MAKE_LIB
 all: $(PROJ)-$(strip $(1)).lib
 
-$(PROJ)-$(strip $(1)).lib: $(PROJ)_lib.lst $(SRC) Makefile ../../zobjfile.h
+$(PROJ)-$(strip $(1)).lib: $(PROJ)_lib.lst $(SRC) Makefile ../zobjfile.h
 	$(Z80ASM_EXE) -l -x$(PROJ)-$(strip $(1)).lib $(2) @$(PROJ)_lib.lst
 
 clean::

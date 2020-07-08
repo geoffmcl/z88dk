@@ -6,7 +6,6 @@
 #------------------------------------------------------------------------------
 
 PROJ			:= z80asm
-SUB_PROJ_DIR	:= $(PROJ)2
 
 # EXESUFFIX is passed when cross-compiling Win32 on Linux
 ifeq ($(OS),Windows_NT)
@@ -21,85 +20,146 @@ TARGET 			:= $(PROJ)$(EXESUFFIX)
 # UNIXem is needed in both Windows_NT and in a MinGW build in Unix
 ifeq ($(EXESUFFIX),.exe)
   UNIXem_CFLAGS	:= -I../../ext/UNIXem/include
-  UNIXem_OBJS	:= ../../ext/UNIXem/src/glob.o \
-				   ../../ext/UNIXem/src/dirent.o
+  UNIXem_OBJS	:=   ../../ext/UNIXem/src/glob.o \
+				     ../../ext/UNIXem/src/dirent.o
 endif
 
 CC 				?= gcc
+CXX				?= g++
 INSTALL 		?= install
 CROSS			?= 0
 
-CP				:= cp -f 
+REFLEX			?= reflex --fast --noline
+ASTYLE			?= astyle --project=.astylerc
+CP				?= cp -f
 
 #------------------------------------------------------------------------------
 # Object files
 #------------------------------------------------------------------------------
-SRCS			:= $(filter-out test.c,$(wildcard *.c lib/*.c ../common/*.c ../../ext/regex/reg*.c))
-OBJS 			:= $(SRCS:.c=.o) \
-				   $(UNIXem_OBJS)
-DEPENDS			:= $(SRCS:.c=.d)
+ALL_C_SRCS		:= $(wildcard \
+						*.c \
+						doc/*.c \
+						lib/*.c \
+						../common/*.c \
+						../../ext/regex/reg*.c)
+C_SRCS			:= $(filter-out test.c,$(ALL_C_SRCS))
+CXX_SRCS		:= $(wildcard cpp/*.cpp)
+
+OBJS			:= $(C_SRCS:.c=.o) $(CXX_SRCS:.cpp=.o) $(UNIXem_OBJS)
+DEPENDS			:= $(C_SRCS:.c=.d) $(CXX_SRCS:.cpp=.d) $(UNIXem_OBJS:.o=.d)
+
 TEST_SRC_MAIN	:= $(wildcard t/test_*.c)
 TEST_SRC_LIB	:= t/testlib.c
 
 #------------------------------------------------------------------------------
-# variables
+# compilation flags
 #------------------------------------------------------------------------------
+
 OPT 			= -O3
 
-STD 			= -std=gnu11
-LOCAL_LIB 		:= lib
-LOCAL_CFLAGS 	+= -MMD -I. -I$(LOCAL_LIB) -It -g -Wall $(STD) $(OPT) \
+FLAGS			:= $(OPT) -MMD -g -Wall \
+				   -I. \
+				   -Idoc \
+				   -Icpp \
+				   -Ilib \
 				   -I.. \
 				   -I../common \
+				   -I../../ext/RE-flex/include \
 				   -I../../ext/optparse \
 				   -I../../ext/regex \
 				   -I../../ext/uthash/src \
 				   $(UNIXem_CFLAGS)
 
-#------------------------------------------------------------------------------
-.PHONY: all clean test install astyle subproj
+CFLAGS			+= -std=gnu11           $(FLAGS)
+CXXFLAGS		+= -std=gnu++14 -Wextra $(FLAGS)
+LDFLAGS			+= -L../../ext/RE-flex/lib -lreflexmin
 
 #------------------------------------------------------------------------------
-all: $(TARGET)
+.PHONY: all clean test install astyle z80asm_lib
 
-$(TARGET): subproj
+#------------------------------------------------------------------------------
+define MAKE_C_EXE
+all: $(1)$(EXESUFFIX)
 
-subproj:
-	$(MAKE) -C $(SUB_PROJ_DIR) all
-
+$(1)$(EXESUFFIX): $(2)
+	$(CC) $(CFLAGS) $(2) $(LDFLAGS) -o $(1)$(EXESUFFIX)
+	
 clean::
-	$(MAKE) -C $(SUB_PROJ_DIR) clean
+	$(RM) $(1) $(1)$(EXESUFFIX) $(2)
+
+test:: $(1)$(EXESUFFIX)
+ifeq ($(3),1)
+	./$(1)$(EXESUFFIX)
+endif
+endef
+
+define MAKE_CXX_EXE
+all: $(1)$(EXESUFFIX)
+
+$(1)$(EXESUFFIX): $(2)
+	$(CXX) $(CXXFLAGS) $(2) $(LDFLAGS) -o $(1)$(EXESUFFIX)
+	
+clean::
+	$(RM) $(1) $(1)$(EXESUFFIX) $(2)
+
+test:: $(1)$(EXESUFFIX)
+ifeq ($(3),1)
+	./$(1)$(EXESUFFIX)
+endif
+endef
 
 #------------------------------------------------------------------------------
-
-%.o: %.c
-	$(CC) $(LOCAL_CFLAGS) $(CFLAGS) -c -o $@ $<
+$(eval $(call MAKE_CXX_EXE,$(PROJ),$(OBJS),0))
 
 #------------------------------------------------------------------------------
-# z80asm2
+$(TARGET): ../config.h
+
+# config file
+../config.h:
+	touch ../config.h
+
+# RE-flex generated files
+$(TARGET): cpp/options.yy.o
+
+cpp/options.yy.o: cpp/options.yy.cpp
+
+cpp/options.yy.cpp cpp/options.yy.h: cpp/options.l
+	$(REFLEX) options.l \
+		--lexer=OptionsLexer \
+		--outfile=cpp/options.yy.cpp \
+		--header-file=cpp/options.yy.h
+
+# documentation files
+$(TARGET): doc/z80asm_manual.o doc/z80asm_usage.o
+
+doc/z80asm_manual.o: doc/z80asm_manual.c
+
+doc/z80asm_usage.o: doc/z80asm_usage.c
+
+doc/z80asm_manual.c doc/z80asm_manual.h doc/z80asm_usage.c doc/z80asm_usage.h: \
+		$(wildcard doc/*.pl doc/*.in doc/*.txt doc/*.md)
+	$(MAKE) -C doc
+
 #------------------------------------------------------------------------------
-#all: z80asm2$(EXESUFFIX)
-#
-#z80asm2$(EXESUFFIX): dev/z80asm2/z80asm2$(EXESUFFIX)
-#	cp dev/z80asm2/z80asm2$(EXESUFFIX) z80asm2$(EXESUFFIX)
-#
-#dev/z80asm2/z80asm2$(EXESUFFIX): $(wildcard dev/z80asm2/*.c dev/z80asm2/*.h)
-#	$(MAKE) -C dev/z80asm2
-#
+.c.o:
+	$(CC) $(CFLAGS) -c $< -o $@
+
+.cpp.o:
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
 #------------------------------------------------------------------------------
 # libraries
 #------------------------------------------------------------------------------
-.PHONY: z80asm_lib
 all: z80asm_lib
 
 z80asm_lib:
 ifeq ($(CROSS),0)
-	$(MAKE) -C dev/z80asm_lib
-	cp dev/z80asm_lib/$(PROJ)-*.lib .
+	$(MAKE) -C z80asm_lib
+	$(CP) z80asm_lib/$(PROJ)-*.lib .
 endif
 
 clean::
-	$(MAKE) -C dev/z80asm_lib clean
+	$(MAKE) -C z80asm_lib clean
 	$(RM) $(PROJ)-*.lib
 
 #------------------------------------------------------------------------------
@@ -107,7 +167,7 @@ clean::
 #------------------------------------------------------------------------------
 .PHONY: dev
 dev:
-	perl asmstyle.pl dev/z80asm_lib/*.asm
+	perl asmstyle.pl z80asm_lib/*.asm
 	$(MAKE) -C tt
 	$(MAKE) -C lib
 	$(MAKE) -f dev/Makefile
@@ -119,24 +179,24 @@ clean::
 #------------------------------------------------------------------------------
 # install
 #------------------------------------------------------------------------------
-install: subproj $(TARGET) z80asm_lib
+install: $(TARGET) z80asm_lib
 	$(INSTALL) $(TARGET)     $(PREFIX)/bin/$(EXEC_PREFIX)$(TARGET)
 	$(INSTALL) asmpp.pl      $(PREFIX)/bin/asmpp.pl
-	$(MAKE) -C dev/z80asm_lib install PREFIX=$(PREFIX_SHARE)
+	$(MAKE) -C z80asm_lib install PREFIX=$(PREFIX_SHARE)
 
 #------------------------------------------------------------------------------
 # clean
 #------------------------------------------------------------------------------
 clean::
-	$(RM) *.core $(LOCAL_LIB)/*.core $(LOCAL_LIB)/t/*.core $(LOCAL_LIB)/t/uthash/*.core
-	$(RM) *.o    $(LOCAL_LIB)/*.o    $(LOCAL_LIB)/t/*.o    $(LOCAL_LIB)/t/uthash/*.o
-	$(RM) *.out  $(LOCAL_LIB)/*.out  $(LOCAL_LIB)/t/*.out  $(LOCAL_LIB)/t/uthash/*.out
-	$(RM) *.orig $(LOCAL_LIB)/*.orig $(LOCAL_LIB)/t/*.orig $(LOCAL_LIB)/t/uthash/*.orig
-	$(RM) *.exe  $(LOCAL_LIB)/*.exe  $(LOCAL_LIB)/t/*.exe  $(LOCAL_LIB)/t/uthash/*.exe
-	$(RM) *.tmp  $(LOCAL_LIB)/*.tmp  $(LOCAL_LIB)/t/*.tmp  $(LOCAL_LIB)/t/uthash/*.tmp
-	$(RM) *.bak  $(LOCAL_LIB)/*.bak  $(LOCAL_LIB)/t/*.bak  $(LOCAL_LIB)/t/uthash/*.bak
-	$(RM) *.log  $(LOCAL_LIB)/*.log  $(LOCAL_LIB)/t/*.log  $(LOCAL_LIB)/t/uthash/*.log
-	$(RM) *~     $(LOCAL_LIB)/*~     $(LOCAL_LIB)/t/*~     $(LOCAL_LIB)/t/uthash/*~
+	$(RM) *.core lib/*.core lib/t/*.core lib/t/uthash/*.core
+	$(RM) *.o    lib/*.o    lib/t/*.o    lib/t/uthash/*.o
+	$(RM) *.out  lib/*.out  lib/t/*.out  lib/t/uthash/*.out
+	$(RM) *.orig lib/*.orig lib/t/*.orig lib/t/uthash/*.orig
+	$(RM) *.exe  lib/*.exe  lib/t/*.exe  lib/t/uthash/*.exe
+	$(RM) *.tmp  lib/*.tmp  lib/t/*.tmp  lib/t/uthash/*.tmp
+	$(RM) *.bak  lib/*.bak  lib/t/*.bak  lib/t/uthash/*.bak
+	$(RM) *.log  lib/*.log  lib/t/*.log  lib/t/uthash/*.log
+	$(RM) *~     lib/*~     lib/t/*~     lib/t/uthash/*~
 	$(RM) -rf Debug Release x1 x2 x3
 	$(RM) $(OBJS) $(TEST_SRC_LIB:.c=.o)
 
@@ -146,12 +206,12 @@ clean::
 all: t/libtestlib.a
 
 t/libtestlib.a : $(OBJS) $(TEST_SRC_LIB:.c=.o)
-	ar rcs t/libtestlib.a $(OBJS:main.o=) $(TEST_SRC_LIB:.c=.o)
+	ar rcs t/libtestlib.a $(OBJS:cpp/main.o=) $(TEST_SRC_LIB:.c=.o)
 
 $(TEST_SRC_MAIN:.c=.o) : t/libtestlib.a
 
 .o.out :
-	$(CC) $(LOCAL_CFLAGS) $(CFLAGS) $< -o $(<:.o=$(EXESUFFIX)) $(LDFLAGS) -Lt -ltestlib
+	$(CC) $(CFLAGS) $< -o $(<:.o=$(EXESUFFIX)) $(LDFLAGS) -Lt -ltestlib
 	$(<:.o=$(EXESUFFIX)) 2> $@~
 	diff -w $(<:.o=.bmk) $@~
 	mv -f $@~ $@
@@ -162,15 +222,14 @@ clean::
 all:
 	perl dev/cpu2/cpu.pl
 
-test: $(TARGET) z80asm_lib
+test:: $(TARGET) z80asm_lib
 	$(MAKE) dev
 	$(MAKE) z80asm_lib
 	$(MAKE) prove_c
 	$(MAKE) prove_perl
 
 testdev:
-	$(MAKE) -C dev/z80asm_lib test
-#	$(MAKE) -C dev/z80asm2 test
+	$(MAKE) -C z80asm_lib test
 	perl dev/cpu2/cpu.pl -s test
 
 testlib:
@@ -196,8 +255,15 @@ clean::
 	$(RM) zcc_opt.def mandel.bin   mandel.tap
 
 clean::
-	$(RM) $(TARGET) $(LOCAL_LIB)/$(TARGET) test* $(LOCAL_LIB)/test*
-	$(RM) t/*.tmp $(LOCAL_LIB)/t/*.tmp t/dev/*.tmp
+	$(RM) $(TARGET) lib/$(TARGET) test* lib/test*
+	$(RM) t/*.tmp lib/t/*.tmp t/dev/*.tmp
+
+#------------------------------------------------------------------------------
+astyle:
+	$(ASTYLE) *.c,*.h cpp/*.cpp,*.h
+
+clean::
+	$(RM) *.orig t/*.orig *.bak t/*.bak
 
 #------------------------------------------------------------------------------
 # Dependencies
