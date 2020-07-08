@@ -12,6 +12,8 @@ b) performance - avltree 50% slower when loading the symbols from the ZX 48 ROM 
    see t\developer\benchmark_symtab.t
 */
 
+#include "legacy.h"
+
 #include "die.h"
 #include "errors.h"
 #include "listfile.h"
@@ -155,7 +157,7 @@ Symbol *define_static_def_sym(const char *name, long value )
     Symbol *sym = _define_sym( name, value, TYPE_CONSTANT, SCOPE_LOCAL, 
 						NULL, get_first_section(NULL), 
 						& static_symtab );
-	if (opts.verbose) 
+	if (OptionVerbose()) 
 		printf("Predefined constant: %s = $%04X\n", name, (int)value);
 	return sym;
 }

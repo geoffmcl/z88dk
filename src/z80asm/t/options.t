@@ -27,65 +27,6 @@ unlink_testfiles();
 t_z80asm_capture("", 		$copyrightmsg, 	"", 0);
 
 #------------------------------------------------------------------------------
-# --verbose, -v
-#------------------------------------------------------------------------------
-my $verbose_text = <<'END';
-Reading library 'z80asm-z80-.lib'
-Predefined constant: __CPU_Z80__ = $0001
-Predefined constant: __CPU_ZILOG__ = $0001
-Assembling 'test.asm' to 'test.o'
-Reading 'test.asm' = 'test.asm'
-Writing object file 'test.o'
-Module 'test' size: 3 bytes
-
-Code size: 3 bytes ($0000 to $0002)
-Creating binary 'test.bin'
-END
-
-for my $options ('-v', '--verbose') {
-	unlink_testfiles();
-	write_file(asm_file(), " nop \n nop \n nop");
-	t_z80asm_capture("-b -s -l -g $options ".asm_file(), 
-					$verbose_text, "", 0);
-	ok -f o_file();
-	ok -f bin_file();
-	is read_file(bin_file(), binmode => ':raw'), "\0\0\0";
-	
-	unlink_testfiles();
-	write_file(asm_file(), " nop \n nop \n nop");
-	t_z80asm_capture("-b -s -l -g $options ".asm_file(), 
-					$verbose_text, "", 0);
-	ok -f o_file();
-	ok -f bin_file();
-	is read_file(bin_file(), binmode => ':raw'), "\0\0\0";
-	
-}
-
-# check no arguments
-t_z80asm_capture("-v=x", 	"", 	<<'ERR', 1);
-Error: illegal option: -v=x
-ERR
-
-t_z80asm_capture("--verbose=x", 	"", 	<<'ERR', 1);
-Error: illegal option: --verbose=x
-ERR
-
-# not verbose
-unlink_testfiles();
-write_file(asm_file(), "nop");
-t_z80asm_capture("-b ".asm_file(), "", "", 0);
-is read_file(bin_file(), binmode => ':raw'), "\0";
-
-# check no arguments
-t_z80asm_capture("-nv=x", 	"", 	<<'ERR', 1);
-Error: illegal option: -nv=x
-ERR
-
-t_z80asm_capture("--not-verbose=x", 	"", 	<<'ERR', 1);
-Error: illegal option: --not-verbose=x
-ERR
-
-#------------------------------------------------------------------------------
 # asm extension
 #------------------------------------------------------------------------------
 for my $file ('test', 'test.asm') {

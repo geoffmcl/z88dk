@@ -17,11 +17,13 @@ License: The Artistic License 2.0, http://www.perlfoundation.org/artistic_licens
 #include <assert.h>
 #include <stdarg.h>
 #include <stdio.h>
+#include <stdbool.h>
 
 char *GetLibfile( char *filename ) { return ""; }
 extern Symbol *_define_sym( char *name, long value, sym_type_t sym_type, byte_t type_mask,
                      Module *module, Section *section,
 					 SymbolHash **psymtab );
+bool OptionVerbose() { return false; }
 
 /* reuse string - test saving of keys by hash */
 static char *S(char *str)

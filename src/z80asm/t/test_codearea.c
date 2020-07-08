@@ -12,8 +12,10 @@ License: The Artistic License 2.0, http://www.perlfoundation.org/artistic_licens
 #include <assert.h>
 #include <stdio.h>
 #include <stdarg.h>
+#include <stdbool.h>
 
 char *GetLibfile( char *filename ) { return ""; }
+bool OptionVerbose() { return false; }
 
 static void dump_sections(char *title, int line)
 {

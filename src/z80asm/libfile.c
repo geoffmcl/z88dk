@@ -4,6 +4,8 @@
 // License: The Artistic License 2.0, http://www.perlfoundation.org/artistic_license_2_0
 //-----------------------------------------------------------------------------
 
+#include "legacy.h"
+
 #include "errors.h"
 #include "fileutil.h"
 #include "libfile.h"
@@ -42,7 +44,7 @@ void make_library(const char *lib_filename, argv_t *src_files)
 	if ( lib_filename == NULL )
 		return;					/* ERROR */
 
-	if (opts.verbose)
+	if (OptionVerbose())
 		printf("Creating library '%s'\n", path_canon(lib_filename));
 
 	/* write library header */

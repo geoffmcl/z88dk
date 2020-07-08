@@ -1,8 +1,8 @@
 #!/usr/bin/perl
 
 # z80asm restart
-# Copyright (c) Paulo Custodio, 2020
-# License: http://www.perlfoundation.org/artistic_license_2_0
+# Copyright (c) Paulo Custodio, 2011-2020
+# License: The Artistic License 2.0, http://www.perlfoundation.org/artistic_license_2_0
 
 use strict;
 use warnings;
@@ -39,8 +39,8 @@ sub convert_file {
 	# in text mode, convert CR-LF to LF and remove unsigned
 	if (!$opt_u) {
 		$c =~ s/unsigned char /char /g;
-		$c =~ s/0x0d,[\s\n]+0x0a,/'\\n',\n /g;	# intermeditate lines
-		$c =~ s/0x0d,[\s\n]+0x0a/'\\n'/g;		# last line
+		$c =~ s/(0x0d,[\s\n]+)?0x0a,/'\\n',\n /g;	# intermeditate lines
+		$c =~ s/(0x0d,[\s\n]+)?0x0a/'\\n'/g;		# last line
 		$c =~ s/0x09/'\\t'/g;
 		$c =~ s/0x27/'\\''/g;
 		$c =~ s/0x5c/'\\\\'/g;

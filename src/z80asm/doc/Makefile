@@ -1,6 +1,6 @@
 # z80asm restart
-# Copyright (c) Paulo Custodio, 2020
-# License: http://www.perlfoundation.org/artistic_license_2_0
+# Copyright (c) Paulo Custodio, 2011-2020
+# License: The Artistic License 2.0, http://www.perlfoundation.org/artistic_license_2_0
 
 all: 	z80asm.md   z80asm-future.md \
 		z80asm.html z80asm-future.html \
@@ -17,6 +17,7 @@ all: 	z80asm.md   z80asm-future.md \
 .md.html:
 	@echo use grip from https://github.com/joeyespo/grip
 	grip $< --export $@
+	@if grep '<title>500' $@ ; then $(RM) $@; exit 1; fi
 
 .html.txt:
 	@echo use elinks to render html

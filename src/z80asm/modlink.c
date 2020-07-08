@@ -6,6 +6,8 @@ Copyright (C) Paulo Custodio, 2011-2020
 License: The Artistic License 2.0, http://www.perlfoundation.org/artistic_license_2_0
 */
 
+#include "legacy.h"
+
 #include "alloc.h"
 #include "codearea.h"
 #include "errors.h"
@@ -205,7 +207,7 @@ bool library_file_append(const char * filename) {
 	// create a new library and append to list - file will be loaded when linking
 	obj_files_append(&g_libraries, filename, NULL);
 
-	if (opts.verbose)
+	if (OptionVerbose())
 		printf("Reading library '%s'\n", path_canon(filename));
 
 	return true;
@@ -675,7 +677,7 @@ static void define_location_symbols(void)
 	section = get_last_section();
 	end_addr = section->addr + get_section_size(section);
 
-	if (opts.verbose)
+	if (OptionVerbose())
 		printf("Code size: %d bytes ($%04X to $%04X)\n",
 		(int)(get_sections_size()), (int)start_addr, (int)end_addr - 1);
 
@@ -697,7 +699,7 @@ static void define_location_symbols(void)
 			start_addr = section->addr;
 			end_addr = start_addr + get_section_size(section);
 
-			if (opts.verbose)
+			if (OptionVerbose())
 				printf("Section '%s' size: %d bytes ($%04X to $%04X)\n",
 					section->name, (int)(end_addr - start_addr),
 					(unsigned int)start_addr, (unsigned int)end_addr - 1);
@@ -905,7 +907,7 @@ static void link_lib_module(const char* modname, obj_file_t* obj, StrHash* exter
 	lib_module->modname = spool_add(modname);
 	object_module_append(obj, lib_module);
 
-	if (opts.verbose)
+	if (OptionVerbose())
 		printf("Linking library module '%s'\n", modname);
 
 	link_module(obj, extern_syms);
@@ -1035,7 +1037,7 @@ CreateBinFile(void)
 		filename = get_bin_filename(get_first_module(NULL)->filename);		/* add '.bin' extension */
 
 	/* binary output to filename.bin */
-	if (opts.verbose)
+	if (OptionVerbose())
 		printf("Creating binary '%s'\n", path_canon(filename));
 
 	binaryfile = xfopen(filename, "wb");

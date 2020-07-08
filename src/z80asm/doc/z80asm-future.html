@@ -2270,48 +2270,199 @@ a new binary output file, named &lt;first_module_name&gt;_&lt;section_name&gt;.b
 <li>Any section that has no  <a href="#10_25_">ORG</a>  address gets packed at the end of the previous section.</li>
 </ol>
 <ul>
-<li>The null section is only special in the sense that the code is output
+<li>
+<p>The null section is only special in the sense that the code is output
 to &lt;first_module_name&gt;.bin, and that it's  <a href="#10_25_">ORG</a>  address can be defined in
-the command line via -rhhhh.</li>
-<li>simplify expressions to tranform LABEL1-LABEL2 into a constant</li>
-<li>--icase option</li>
-<li>--c-strings or --asm-strings</li>
-<li>architecture-dependent character mapping</li>
-<li>Test: jr: jr jr</li>
-<li>Need option to debug pre-processing and macro expansion - -E</li>
-<li>Add one opcode</li>
-<li>Separate standard  <a href="#7_">Z80</a>  assembly from extensions; add macro files for extensions</li>
-<li>Preprocess</li>
-<li>Parsing</li>
-<li>Symbol Table</li>
-<li>Object Files</li>
-<li>Assembling</li>
-<li>Linking</li>
-<li>List file</li>
-<li>allow EQU as synonym to  <a href="#10_6_">DEFC</a>
+the command line via -rhhhh.</p>
 </li>
-<li>finish the split between front-end and back-end;</li>
-<li>implement an expression parser with a parser generator, to get rid of the need to write a '#' to tell the assembler something it should know: a difference between two addresses is a constant;</li>
-<li>add an additional step to automatically change JR into JP if the distance is too far;</li>
-<li>cleanup the symbol table to implement the  <a href="#10_14_">GLOBAL</a>  suggestion: declare a symbol  <a href="#10_14_">GLOBAL</a>  and it is  <a href="#10_26_">PUBLIC</a>  if defined, or  <a href="#10_12_">EXTERN</a>  otherwise</li>
-<li>implement macros inside the assembler</li>
-<li>add high level constructs ( <a href="#10_15_">IF</a>  flag / ELSE / ENDIF, DO WHILE flag, ...)</li>
-<li>add a rule based optimizer based on RAGEL as a state machine generator</li>
-<li>BUG_0038: library modules not loaded in sequence: The library modules loaded to the linked binary file should respect the order given on the command line.</li>
-<li>generate .err files with errors</li>
-<li>show source line and syntax error location</li>
-<li>Manage libraries</li>
-<li>Link object files and libraries</li>
-<li>Split object files in modules, link each module separately</li>
-<li>:: to define public symbol</li>
+<li>
+<p>simplify expressions to tranform LABEL1-LABEL2 into a constant</p>
+</li>
+<li>
+<p>--icase option</p>
+</li>
+<li>
+<p>--c-strings or --asm-strings</p>
+</li>
+<li>
+<p>architecture-dependent character mapping</p>
+</li>
+<li>
+<p>Test: jr: jr jr</p>
+</li>
+<li>
+<p>Need option to debug pre-processing and macro expansion - -E</p>
+</li>
+<li>
+<p>Add one opcode</p>
+</li>
+<li>
+<p>Separate standard  <a href="#7_">Z80</a>  assembly from extensions; add macro files for extensions</p>
+</li>
+<li>
+<p>Preprocess</p>
+</li>
+<li>
+<p>Parsing</p>
+</li>
+<li>
+<p>Symbol Table</p>
+</li>
+<li>
+<p>Object Files</p>
+</li>
+<li>
+<p>Assembling</p>
+</li>
+<li>
+<p>Linking</p>
+</li>
+<li>
+<p>List file</p>
+</li>
+<li>
+<p>allow EQU as synonym to  <a href="#10_6_">DEFC</a></p>
+</li>
+<li>
+<p>finish the split between front-end and back-end;</p>
+</li>
+<li>
+<p>implement an expression parser with a parser generator, to get rid of the need to write a '#' to tell the assembler something it should know: a difference between two addresses is a constant;</p>
+</li>
+<li>
+<p>add an additional step to automatically change JR into JP if the distance is too far;</p>
+</li>
+<li>
+<p>cleanup the symbol table to implement the  <a href="#10_14_">GLOBAL</a>  suggestion: declare a symbol  <a href="#10_14_">GLOBAL</a>  and it is  <a href="#10_26_">PUBLIC</a>  if defined, or  <a href="#10_12_">EXTERN</a>  otherwise</p>
+</li>
+<li>
+<p>implement macros inside the assembler</p>
+</li>
+<li>
+<p>add high level constructs ( <a href="#10_15_">IF</a>  flag / ELSE / ENDIF, DO WHILE flag, ...)</p>
+</li>
+<li>
+<p>add a rule based optimizer based on RAGEL as a state machine generator</p>
+</li>
+<li>
+<p>BUG_0038: library modules not loaded in sequence: The library modules loaded to the linked binary file should respect the order given on the command line.</p>
+</li>
+<li>
+<p>generate .err files with errors</p>
+</li>
+<li>
+<p>show source line and syntax error location</p>
+</li>
+<li>
+<p>Manage libraries</p>
+</li>
+<li>
+<p>Link object files and libraries</p>
+</li>
+<li>
+<p>Split object files in modules, link each module separately</p>
+</li>
+<li>
+<p>:: to define public symbol</p>
+</li>
 <li>
 <h2>
 <a id="user-content-to-declare-external-symbol" class="anchor" href="#to-declare-external-symbol" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>to declare external symbol</h2>
 </li>
-<li>#include</li>
-<li>#define</li>
-<li>#macro</li>
+<li>
+<p>#include</p>
+</li>
+<li>
+<p>#define</p>
+</li>
+<li>
+<p>#macro</p>
+</li>
+<li>
+<p>Implement recursive includes in Coco/R parser/scanner</p>
+</li>
+<li>
+<p>Separate standard  <a href="#7_">Z80</a>  assembly from extensions; add macro files for extensions.</p>
+</li>
+<li>
+<p>Port to C++</p>
+</li>
+<li>
+<p>Parse command line</p>
+</li>
+<li>
+<p>Input source</p>
+</li>
+<li>
+<p>Preprocess</p>
+</li>
+<li>
+<p>Lexing</p>
+</li>
+<li>
+<p>Parsing</p>
+</li>
+<li>
+<p>Symbol Table</p>
+</li>
+<li>
+<p>Object Files</p>
+</li>
+<li>
+<p>Assembling</p>
+</li>
+<li>
+<p>Linking</p>
+</li>
+<li>
+<p>List file</p>
+</li>
+<li>
+<p>allow EQU as synonym to  <a href="#10_6_">DEFC</a></p>
+</li>
+<li>
+<p>finish the split between front-end and back-end;</p>
+</li>
+<li>
+<p>implement an expression parser with a parser generator, to get rid of
+the need to write a '#' to tell the assembler something it should know:
+a difference between two addresses is a constant;</p>
+</li>
+<li>
+<p>add an additional step to automatically change JR into JP if the
+distance is too far;</p>
+</li>
+<li>
+<p>implement macros inside the assembler</p>
+</li>
+<li>
+<p>add high level constructs ( <a href="#10_15_">IF</a>  flag / ELSE / ENDIF,
+DO WHILE flag, ...)</p>
+</li>
+<li>
+<p>add a rule based optimizer based on RAGEL as a state machine generator</p>
+</li>
+<li>
+<p>Errors are only output on stderr, *.err files are not created.
+*.err files are a leftover from operating systems that could not
+redirect standard error.</p>
+<p>Fatal errors example:</p>
+</li>
 </ul>
+<pre><code>   x.cc:1:18: fatal error: nofile: No such file or directory  
+ 	\#include "nofile"  
+ 	------------------^  
+   compilation terminated.
+</code></pre>
+<pre><code>Non-fatal errors example:  
+</code></pre>
+<pre><code>   x.cc:1:7: error: expected initializer before 'b'  
+ 	int a b  
+ 	-------^ 
+
+
+
+</code></pre>
 </li>
 </ul>
 <hr>

@@ -7,6 +7,8 @@ License: The Artistic License 2.0, http://www.perlfoundation.org/artistic_licens
 Manage the code area in memory
 */
 
+#include "legacy.h"
+
 #include "codearea.h"
 #include "die.h"
 #include "errors.h"
@@ -622,7 +624,7 @@ void fwrite_codearea(const char *filename, FILE **pbinfile, FILE **prelocfile)
 
                         xfclose_remove_empty(*pbinfile);
 
-						if (opts.verbose)
+						if (OptionVerbose())
 							printf("Creating binary '%s'\n", path_canon(get_bin_filename(Str_data(new_name))));
 
 						*pbinfile = xfopen(get_bin_filename(Str_data(new_name)), "wb");

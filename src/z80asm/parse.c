@@ -8,6 +8,8 @@ License: The Artistic License 2.0, http://www.perlfoundation.org/artistic_licens
 Define ragel-based parser. 
 */
 
+#include "legacy.h"
+
 #include "class.h"
 #include "codearea.h"
 #include "die.h"
@@ -490,7 +492,7 @@ bool parse_file(const char *filename)
 	src_push();
 	{
 		if (src_open(filename, opts.inc_path)) {
-			if (opts.verbose)
+			if (OptionVerbose())
 				printf("Reading '%s' = '%s'\n", path_canon(filename), path_canon(src_filename()));	/* display name of file */
 
 			sym.tok = TK_NIL;

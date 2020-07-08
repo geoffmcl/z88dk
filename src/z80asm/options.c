@@ -5,7 +5,9 @@
 // License: The Artistic License 2.0, http://www.perlfoundation.org/artistic_license_2_0
 //-----------------------------------------------------------------------------
 
-#include "../config.h"
+#include "legacy.h"
+
+#include "../config.h"			// TODO: remove include ../
 #include "../portability.h"
 #include "die.h"
 #include "errors.h"
@@ -330,10 +332,17 @@ static void process_opt( int *parg, int argc, char *argv[] )
 static void process_options( int *parg, int argc, char *argv[] )
 {
 #define II (*parg)
-	for (II = 1; II < argc && (argv[II][0] == '-' || argv[II][0] == '+'); II++) {
-		if (strcmp(argv[II], "--") == 0) {
+	for (II = 1; II < argc; II++) {
+		if (argv[II][0] == '\0') {
+			// ignore empty args
+		}
+		else if (strcmp(argv[II], "--") == 0) {
 			// end of options
 			II++;
+			break;
+		}
+		else if (argv[II][0] != '-' && argv[II][0] != '+') {
+			// end of options
 			break;
 		}
 		else {
@@ -970,7 +979,7 @@ void checkrun_appmake(void)
 				out_filename,
 				origin);
 
-			if (opts.verbose)
+			if (OptionVerbose())
 				puts(Str_data(cmd));
 
 			int rv = system(Str_data(cmd));
@@ -999,7 +1008,7 @@ static const char *check_library(const char *lib_name)
 	if (file_exists(lib_name))
 		return lib_name;
 	
-	if (opts.verbose)
+	if (OptionVerbose())
 		printf("Library '%s' not found\n", path_canon(lib_name));
 
 	return NULL;

@@ -13,6 +13,10 @@ PREFIX 			?= ..
 
 all: $(PREFIX)/bin/reflex$(EXESUFFIX)
 
+clean:
+	$(RM) $(PREFIX)/bin/reflex$(EXESUFFIX)
+	cd RE-flex && ./clean.sh
+
 $(PREFIX)/bin/reflex$(EXESUFFIX):
 	cd RE-flex && ./clean.sh
 	cd RE-flex && ./build.sh

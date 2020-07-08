@@ -6,6 +6,8 @@ Copyright (C) Paulo Custodio, 2011-2020
 License: The Artistic License 2.0, http://www.perlfoundation.org/artistic_license_2_0
 */
 
+#include "legacy.h"
+
 #include "die.h"
 #include "directives.h"
 #include "fileutil.h"
@@ -21,6 +23,7 @@ License: The Artistic License 2.0, http://www.perlfoundation.org/artistic_licens
 #include "utstring.h"
 #include "zobjfile.h"
 #include <sys/stat.h>
+#include "z80asm2\legacy.h"
 
 /* external functions */
 void Z80pass2( void );
@@ -181,7 +184,7 @@ static void do_assemble(const char *src_filename )
 	/* Init ASMPC */
 	set_PC(0);
 
-	if (opts.verbose)
+	if (OptionVerbose())
 		printf("Assembling '%s' to '%s'\n", path_canon(src_filename), path_canon(obj_filename));
 
 	parse_file(src_filename);
@@ -215,7 +218,7 @@ static void do_assemble(const char *src_filename )
 	remove_all_global_syms();
 	ExprList_remove_all(CURRENTMODULE->exprs);
 
-	if (opts.verbose)
+	if (OptionVerbose())
 		putchar('\n');    /* separate module texts */
 }
 
@@ -293,3 +296,4 @@ int z80asm_main( int argc, char *argv[] )
         return 0;    /* assembler successfully ended */
     }
 }
+

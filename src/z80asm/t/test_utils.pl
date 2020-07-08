@@ -520,6 +520,9 @@ sub t_compile_module {
 	$main_code = "
 #include <stdlib.h>
 #include <stdio.h>
+#include <stdbool.h>
+
+bool OptionVerbose() { return false; }
 
 ".join("\n", map {"#include \"$_\""} grep {-f $_} map {"$_.h"} sort keys %modules)."\n".'
 #undef main

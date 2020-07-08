@@ -174,6 +174,7 @@ install-clean:
 	$(RM) lib/z80asm*.lib
 
 clean: clean-bins
+	$(MAKE) -C ext clean
 	$(MAKE) -C libsrc clean
 	$(RM) lib/clibs/*.lib
 	$(RM) lib/z80asm*.lib

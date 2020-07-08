@@ -37,8 +37,8 @@ CP				:= cp -f
 
 #------------------------------------------------------------------------------
 ALL_C_SRCS		:= $(wildcard \
-						$(wildcard doc/*.c) \
 						$(Z80ASM_DIR)/*.c \
+						$(Z80ASM_DIR)/doc/*.c \
 						$(Z80ASM_DIR)/lib/*.c \
 						$(Z88DK_DIR)/src/common/*.c \
 						$(Z88DK_DIR)/ext/regex/reg*.c)
@@ -51,8 +51,10 @@ CXX_SRCS		:= $(wildcard *.cpp)
 OBJS			:= $(C_SRCS:.c=.o) $(CXX_SRCS:.cpp=.o) $(UNIXem_OBJS)
 DEPENDS			:= $(C_SRCS:.c=.d) $(CXX_SRCS:.cpp=.d)
 
-FLAGS			:= -MMD -g -Wall -Wextra \
-				   -I$(Z80ASM_DIR)/z80asm2/doc \
+FLAGS			:= -MMD -g -Wall \
+				   -I$(Z80ASM_DIR)/z80asm2 \
+				   -I$(Z88DK_DIR)/ext/RE-flex/include \
+				   -I$(Z80ASM_DIR)/doc \
 				   -I$(Z80ASM_DIR)/lib \
 				   -I$(Z88DK_DIR)/src \
 				   -I$(Z88DK_DIR)/src/common \
@@ -60,9 +62,9 @@ FLAGS			:= -MMD -g -Wall -Wextra \
 				   -I$(Z88DK_DIR)/ext/regex \
 				   -I$(Z88DK_DIR)/ext/uthash/src \
 				   $(UNIXem_CFLAGS)
-CCFLAGS			+= -std=gnu11   $(FLAGS)
-CXXFLAGS		+= -std=gnu++14 $(FLAGS)
-LDFLAGS			+= -lz
+CCFLAGS			+= -std=gnu11           $(FLAGS)
+CXXFLAGS		+= -std=gnu++14 -Wextra $(FLAGS)
+LDFLAGS			+= -L$(Z88DK_DIR)/ext/RE-flex/lib -lreflexmin
 
 #------------------------------------------------------------------------------
 .PHONY: all clean astyle
@@ -91,6 +93,31 @@ $(TARGET): $(Z88DK_DIR)/src/config.h
 $(Z88DK_DIR)/src/config.h:
 	touch $(Z88DK_DIR)/src/config.h
 
+$(TARGET): options.yy.o
+
+options.yy.o: options.yy.cpp
+
+options.yy.cpp options.yy.h: options.l
+	reflex options.l --outfile=options.yy.cpp --header-file=options.yy.h \
+		--fast --noline --lexer=OptionsLexer
+
+$(TARGET): $(Z80ASM_DIR)/doc/z80asm_manual.o $(Z80ASM_DIR)/doc/z80asm_usage.o
+
+$(Z80ASM_DIR)/doc/z80asm_manual.o: $(Z80ASM_DIR)/doc/z80asm_manual.c
+
+$(Z80ASM_DIR)/doc/z80asm_usage.o: $(Z80ASM_DIR)/doc/z80asm_usage.c
+
+$(Z80ASM_DIR)/doc/z80asm_manual.c \
+$(Z80ASM_DIR)/doc/z80asm_manual.h \
+$(Z80ASM_DIR)/doc/z80asm_usage.c \
+$(Z80ASM_DIR)/doc/z80asm_usage.h: \
+		$(wildcard \
+			$(Z80ASM_DIR)/doc/*.pl \
+			$(Z80ASM_DIR)/doc/*.in \
+			$(Z80ASM_DIR)/doc/*.txt \
+			$(Z80ASM_DIR)/doc/*.md)
+	$(MAKE) -C $(Z80ASM_DIR)/doc
+
 all: $(Z80ASM_DIR)/$(TARGET)
 
 $(Z80ASM_DIR)/$(TARGET): $(TARGET)
@@ -105,7 +132,7 @@ $(Z80ASM_DIR)/$(TARGET): $(TARGET)
 
 #------------------------------------------------------------------------------
 astyle:
-	$(ASTYLE) ./*.cpp,*.h t/*.cpp,*.h,*.def
+	$(ASTYLE) ./*.cpp,*.h
 
 clean::
 	$(RM) *.orig t/*.orig *.bak t/*.bak

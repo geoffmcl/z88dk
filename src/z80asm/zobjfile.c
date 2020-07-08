@@ -8,6 +8,8 @@ License: The Artistic License 2.0, http://www.perlfoundation.org/artistic_licens
 Handle object file contruction, reading and writing
 */
 
+#include "legacy.h"
+
 #include "class.h"
 #include "codearea.h"
 #include "die.h"
@@ -210,7 +212,7 @@ static long write_code(FILE* fp)
 	code_ptr = ftell(fp);
 	wrote_data = fwrite_module_code(fp, &code_size);
 
-	if (opts.verbose)
+	if (OptionVerbose())
 		printf("Module '%s' size: %ld bytes\n", CURRENTMODULE->modname, (long)code_size);
 
 	if (wrote_data)
@@ -229,7 +231,7 @@ void write_obj_file(const char* source_filename)
 	/* open file */
 	obj_filename = get_obj_filename(source_filename);
 
-	if (opts.verbose)
+	if (OptionVerbose())
 		printf("Writing object file '%s'\n", path_canon(obj_filename));
 
 	fp = xfopen(obj_filename, "wb");

@@ -57,12 +57,14 @@ LOCAL_CFLAGS 	+= -MMD -I. -I$(LOCAL_LIB) -It -g -Wall $(STD) $(OPT) \
 				   $(UNIXem_CFLAGS)
 
 #------------------------------------------------------------------------------
-.PHONY: all clean test install astyle
+.PHONY: all clean test install astyle subproj
 
 #------------------------------------------------------------------------------
 all: $(TARGET)
 
-$(TARGET):
+$(TARGET): subproj
+
+subproj:
 	$(MAKE) -C $(SUB_PROJ_DIR) all
 
 clean::
@@ -177,7 +179,7 @@ testlib:
 prove_c: t/libtestlib.a $(TEST_SRC_MAIN:.c=.o) $(TEST_SRC_MAIN:.c=.out)
 
 prove_perl: $(TARGET)
-	perl -S prove -It2 --state=slow,save -j9 t2/*.t
+	perl -S prove --state=slow,save -j9 t2/*.t
 	perl -S prove t/*.t
 
 clean::
