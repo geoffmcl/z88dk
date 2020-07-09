@@ -5,7 +5,7 @@
 //-----------------------------------------------------------------------------
 
 %top{
-	#include "z80asm_usage.h"
+	#include "z80asm_manual.h"
 	#include "legacy.h"
 	#include <iostream>
 }
@@ -24,8 +24,7 @@
 
 -h \z | \
 --help \z		{ using namespace std;
-				  cout << copyrightmsg << endl << endl
-					   << z80asm_usage;
+				  cout << z80asm_manual;
 				  exit(EXIT_SUCCESS);
 				  return true; 	// not reached
 				}

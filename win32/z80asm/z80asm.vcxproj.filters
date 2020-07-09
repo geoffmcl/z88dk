@@ -57,9 +57,6 @@
     <ClCompile Include="..\..\src\z80asm\expr.c">
       <Filter>Source Files\legacy</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\z80asm\hist.c">
-      <Filter>Source Files\legacy</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\z80asm\libfile.c">
       <Filter>Source Files\legacy</Filter>
     </ClCompile>
@@ -123,23 +120,23 @@
     <ClCompile Include="..\..\src\common\zutils.c">
       <Filter>Source Files\legacy</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\z80asm\z80asm2\CmdArgs.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\z80asm\z80asm2\legacy.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\z80asm\z80asm2\main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\z80asm\z80asm2\options.yy.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\z80asm\doc\z80asm_manual.c">
       <Filter>Source Files\doc</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\z80asm\doc\z80asm_usage.c">
       <Filter>Source Files\doc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\z80asm\cpp\CmdArgs.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\z80asm\cpp\legacy.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\z80asm\cpp\main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\z80asm\cpp\options.yy.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -183,9 +180,6 @@
       <Filter>Header Files\legacy</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\z80asm\expr_def.h">
-      <Filter>Header Files\legacy</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\z80asm\hist.h">
       <Filter>Header Files\legacy</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\z80asm\lib\init.h">
@@ -275,20 +269,20 @@
     <ClInclude Include="..\..\src\common\zutils.h">
       <Filter>Header Files\legacy</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\z80asm\z80asm2\CmdArgs.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\z80asm\z80asm2\legacy.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\z80asm\z80asm2\options.yy.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\z80asm\doc\z80asm_manual.h">
       <Filter>Header Files\doc</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\z80asm\doc\z80asm_usage.h">
       <Filter>Header Files\doc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\z80asm\cpp\CmdArgs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\z80asm\cpp\legacy.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\z80asm\cpp\options.yy.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -313,7 +307,7 @@
     <None Include="..\..\src\z80asm\tt\tokens.yaml">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="..\..\src\z80asm\z80asm2\options.l">
+    <None Include="..\..\src\z80asm\cpp\options.l">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

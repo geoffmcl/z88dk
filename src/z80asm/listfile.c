@@ -11,7 +11,6 @@ Handle assembly listing and symbol table listing.
 #include "codearea.h"
 #include "errors.h"
 #include "fileutil.h"
-#include "hist.h"
 #include "listfile.h"
 #include "options.h"
 #include "strutil.h"

@@ -63,7 +63,6 @@ OPT_VAR(int,		filler,		0)			/* filler byte for defs */
 #endif
 
 OPT_TITLE("Help Options:")
-OPT(OptCall, exit_help, "-h", "--help", "Show help options", "")
 
 OPT_TITLE("Code Generation Options:")
 OPT(OptCall, option_cpu_z80n, "", "--cpu=z80n", "Assemble for the Z80 variant of ZX Next", "")

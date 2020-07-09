@@ -89,7 +89,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\..\src\z80asm\z80asm2;..\..\src\z80asm\doc;..\..\ext\RE-flex\include;..\..\src\z80asm;..\..\src\common;..\..\src\z80asm\lib;..\..\ext\UNIXem\include;..\..\ext\uthash\src;..\..\ext\regex;..\..\ext\optparse;..\..\src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\src\z80asm\cpp;..\..\src\z80asm\doc;..\..\ext\RE-flex\include;..\..\src\z80asm;..\..\src\common;..\..\src\z80asm\lib;..\..\ext\UNIXem\include;..\..\ext\uthash\src;..\..\ext\regex;..\..\ext\optparse;..\..\src</AdditionalIncludeDirectories>
       <SDLCheck>true</SDLCheck>
     </ClCompile>
     <Link>
@@ -130,7 +130,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\..\src\z80asm\z80asm2;..\..\src\z80asm\doc;..\..\ext\RE-flex\include;..\..\src\z80asm;..\..\src\common;..\..\src\z80asm\lib;..\..\ext\UNIXem\include;..\..\ext\uthash\src;..\..\ext\regex;..\..\ext\optparse;..\..\src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\src\z80asm\cpp;..\..\src\z80asm\doc;..\..\ext\RE-flex\include;..\..\src\z80asm;..\..\src\common;..\..\src\z80asm\lib;..\..\ext\UNIXem\include;..\..\ext\uthash\src;..\..\ext\regex;..\..\ext\optparse;..\..\src</AdditionalIncludeDirectories>
       <SDLCheck>true</SDLCheck>
     </ClCompile>
     <Link>
@@ -188,13 +188,16 @@
     <ClCompile Include="..\..\src\common\zutils.c" />
     <ClCompile Include="..\..\src\z80asm\codearea.c" />
     <ClCompile Include="..\..\src\z80asm\common.c" />
+    <ClCompile Include="..\..\src\z80asm\cpp\CmdArgs.cpp" />
+    <ClCompile Include="..\..\src\z80asm\cpp\legacy.cpp" />
+    <ClCompile Include="..\..\src\z80asm\cpp\main.cpp" />
+    <ClCompile Include="..\..\src\z80asm\cpp\options.yy.cpp" />
     <ClCompile Include="..\..\src\z80asm\directives.c" />
     <ClCompile Include="..\..\src\z80asm\doc\z80asm_manual.c" />
     <ClCompile Include="..\..\src\z80asm\doc\z80asm_usage.c" />
     <ClCompile Include="..\..\src\z80asm\errors.c" />
     <ClCompile Include="..\..\src\z80asm\error_func.c" />
     <ClCompile Include="..\..\src\z80asm\expr.c" />
-    <ClCompile Include="..\..\src\z80asm\hist.c" />
     <ClCompile Include="..\..\src\z80asm\libfile.c" />
     <ClCompile Include="..\..\src\z80asm\lib\alloc.c" />
     <ClCompile Include="..\..\src\z80asm\lib\array.c" />
@@ -210,10 +213,6 @@
     <ClCompile Include="..\..\src\z80asm\model.c" />
     <ClCompile Include="..\..\src\z80asm\modlink.c" />
     <ClCompile Include="..\..\src\z80asm\module.c" />
-    <ClCompile Include="..\..\src\z80asm\z80asm2\CmdArgs.cpp" />
-    <ClCompile Include="..\..\src\z80asm\z80asm2\legacy.cpp" />
-    <ClCompile Include="..\..\src\z80asm\z80asm2\main.cpp" />
-    <ClCompile Include="..\..\src\z80asm\z80asm2\options.yy.cpp" />
     <ClCompile Include="..\..\src\z80asm\zobjfile.c" />
     <ClCompile Include="..\..\src\z80asm\opcodes.c" />
     <ClCompile Include="..\..\src\z80asm\options.c" />
@@ -230,6 +229,9 @@
     <ClInclude Include="..\..\src\portability.h" />
     <ClInclude Include="..\..\src\z80asm\codearea.h" />
     <ClInclude Include="..\..\src\z80asm\common.h" />
+    <ClInclude Include="..\..\src\z80asm\cpp\CmdArgs.h" />
+    <ClInclude Include="..\..\src\z80asm\cpp\legacy.h" />
+    <ClInclude Include="..\..\src\z80asm\cpp\options.yy.h" />
     <ClInclude Include="..\..\src\z80asm\directives.h" />
     <ClInclude Include="..\..\src\z80asm\doc\z80asm_manual.h" />
     <ClInclude Include="..\..\src\z80asm\doc\z80asm_usage.h" />
@@ -237,7 +239,6 @@
     <ClInclude Include="..\..\src\z80asm\error_func.h" />
     <ClInclude Include="..\..\src\z80asm\expr.h" />
     <ClInclude Include="..\..\src\z80asm\expr_def.h" />
-    <ClInclude Include="..\..\src\z80asm\hist.h" />
     <ClInclude Include="..\..\src\z80asm\libfile.h" />
     <ClInclude Include="..\..\src\z80asm\lib\alloc.h" />
     <ClInclude Include="..\..\src\z80asm\lib\array.h" />
@@ -257,9 +258,6 @@
     <ClInclude Include="..\..\src\z80asm\model.h" />
     <ClInclude Include="..\..\src\z80asm\modlink.h" />
     <ClInclude Include="..\..\src\z80asm\module.h" />
-    <ClInclude Include="..\..\src\z80asm\z80asm2\CmdArgs.h" />
-    <ClInclude Include="..\..\src\z80asm\z80asm2\legacy.h" />
-    <ClInclude Include="..\..\src\z80asm\z80asm2\options.yy.h" />
     <ClInclude Include="..\..\src\z80asm\zobjfile.h" />
     <ClInclude Include="..\..\src\z80asm\opcodes.h" />
     <ClInclude Include="..\..\src\z80asm\options.h" />
@@ -276,6 +274,7 @@
     <ClInclude Include="..\..\src\z80asm\z80asm.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\src\z80asm\cpp\options.l" />
     <None Include="..\..\src\z80asm\parse_rules.rl" />
     <None Include="..\..\src\z80asm\scan_rules.rl" />
     <None Include="..\..\src\z80asm\tt\error_func.c.tt" />
@@ -283,7 +282,6 @@
     <None Include="..\..\src\z80asm\tt\error_func.yaml" />
     <None Include="..\..\src\z80asm\tt\tokens.h.tt" />
     <None Include="..\..\src\z80asm\tt\tokens.yaml" />
-    <None Include="..\..\src\z80asm\z80asm2\options.l" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\RE-flex-lib\RE-flex-lib.vcxproj">

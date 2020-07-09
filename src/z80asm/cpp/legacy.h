@@ -14,7 +14,6 @@ extern "C" {
 #endif
 
 // call legacy
-extern char copyrightmsg[];
 int z80asm_main(int argc, char* argv[]);
 
 // called by legacy

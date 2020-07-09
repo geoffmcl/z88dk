@@ -12,7 +12,6 @@
 #include "die.h"
 #include "errors.h"
 #include "fileutil.h"
-#include "hist.h"
 #include "init.h"
 #include "model.h"
 #include "modlink.h"
@@ -30,6 +29,10 @@
 #include <errno.h>
 #include <limits.h>
 #include <string.h>
+
+#ifndef PREFIX
+#define PREFIX "/usr/local/share/z88dk"
+#endif
 
 /* default file name extensions */
 #define FILEEXT_ASM     ".asm"    
@@ -52,8 +55,6 @@ enum OptType
 };
 
 /* declare functions */
-static void exit_help( void );
-static void exit_copyright( void );
 static void option_origin(const char *origin );
 static void option_define(const char *symbol );
 static void option_make_lib(const char *library );
@@ -166,9 +167,6 @@ void parse_argv( int argc, char *argv[] )
     int arg;
 
     init_module();
-
-	if ( argc == 1 )
-		exit_copyright();					/* exit if no arguments */
 
 	if (!get_num_errors())
 		process_env_options();				/* process options from Z80ASM environment variable */
@@ -622,42 +620,6 @@ static void show_option( enum OptType type, bool *pflag,
 	STR_DELETE(msg);
 }
 #undef ALIGN_HELP
-
-static void exit_help( void )
-{
-    puts( copyrightmsg );
-    puts( "" );
-    puts( "Usage:" );
-    puts( "  z80asm [options] { @<modulefile> | <filename> }" );
-    puts( "" );
-    puts( "  [] = optional, {} = may be repeated, | = OR clause." );
-    puts( "" );
-	printf("  To assemble 'fred%s' use 'fred' or 'fred%s'\n", FILEEXT_ASM, FILEEXT_ASM);
-    puts( "" );
-    puts( "  <modulefile> contains list of file names of all modules to be linked," );
-    puts( "  one module per line." );
-    puts( "" );
-    puts( "  File types recognized or created by z80asm:" );
-	printf("    %-6s = source file\n", FILEEXT_ASM);
-	printf("    %-6s = object file\n", FILEEXT_OBJ);
-    printf( "    %-6s = list file\n", FILEEXT_LIST );
-    printf( "    %-6s = Z80 binary file\n", FILEEXT_BIN );
-    printf( "    %-6s = symbols file\n", FILEEXT_SYM );
-    printf( "    %-6s = map file\n", FILEEXT_MAP );
-	printf( "    %-6s = reloc file\n", FILEEXT_RELOC);
-	printf( "    %-6s = global address definition file\n", FILEEXT_DEF);
-    printf( "    %-6s = error file\n", FILEEXT_ERR );
-
-#include "options_def.h"
-
-    exit( 0 );
-}
-
-static void exit_copyright( void )
-{
-    printf( "%s\n", copyrightmsg );
-    exit( 0 );
-}
 
 /*-----------------------------------------------------------------------------
 *   Option functions called from Opts table
