@@ -238,8 +238,8 @@ testlib:
 prove_c: t/libtestlib.a $(TEST_SRC_MAIN:.c=.o) $(TEST_SRC_MAIN:.c=.out)
 
 prove_perl: $(TARGET)
-	perl -S prove --state=slow,save -j9 t2/*.t
-	perl -S prove t/*.t
+	perl -S prove --statefile=.prove2 --state=slow,save -j9 t2/*.t
+	perl -S prove --statefile=.prove1 --state=slow,save     t/*.t		# these are not thread-safe
 
 clean::
 	$(RM) zcc_opt.def zcc_proj.lst
